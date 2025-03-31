@@ -257,7 +257,7 @@ export const useCompany = (
     }
   }, [companyId]);
 
-  const handleChange = () => {};
+  useEffect(() => {}, [])
 
   const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,

@@ -61,9 +61,6 @@ const ViewCreateOrEditCompany = () => {
             }) => {
               console.log(values);
 
-              const toggleIsMailingAddressDifferentFromRegisteredAddress =
-                () => {};
-
               return (
                 <form
                   onSubmit={handleSubmit}
