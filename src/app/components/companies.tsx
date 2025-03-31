@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useUserSessionCheck } from "../hooks/checkToken";
-import { Company } from "../types";
-import NavBar from "./navbar";
+import { useUserSessionChecker } from "../hooks/useUserSessionChecker";
+// import { Company } from "../types";
+import NavBar from "./Navbar";
 
 const CompanyCard = ({ company }: { company: Company }) => {
   return (
@@ -16,7 +16,7 @@ const CompanyCard = ({ company }: { company: Company }) => {
 };
 
 const Companies = () => {
-  useUserSessionCheck();
+  useUserSessionChecker();
   const [companies, setCompanies] = useState([]);
 
   useEffect(() => {

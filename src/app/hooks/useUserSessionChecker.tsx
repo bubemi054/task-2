@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export const useUserSessionCheck = () => {
+export const useUserSessionChecker = () => {
   const router = useRouter();
 
   useEffect(() => {

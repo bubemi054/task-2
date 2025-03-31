@@ -1,4 +1,10 @@
 import { gql } from "@apollo/client";
+import {
+  QueryGetSignedUploadUrlArgs,
+  MutationCreateCompanyArgs,
+  SignedLinkData,
+  UpdateCompanyResponse,
+} from "./graphql-types";
 
 export const GET_SIGNED_UPLOAD_URL = gql`
   query GetSignedUploadUrl($input: SignedFileUploadInput!) {
@@ -52,3 +58,15 @@ export const CREATE_COMPANY = gql`
     }
   }
 `;
+
+export type GetSignedUploadUrlResponse = {
+  getSignedUploadUrl: SignedLinkData;
+};
+
+export type GetSignedUploadUrlVariables = QueryGetSignedUploadUrlArgs;
+
+export type CreateCompanyResponse = {
+  createCompany: UpdateCompanyResponse;
+};
+
+export type CreateCompanyVariables = MutationCreateCompanyArgs;

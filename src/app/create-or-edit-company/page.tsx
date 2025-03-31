@@ -1,13 +1,13 @@
 "use client";
 
-import ViewOrEditCompany from "../components/ViewOrEditCompany";
+import ViewCreateOrEditCompany from "../components/ViewCreateOrEditCompany";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "../lib/apollo-client";
 
 const CompanyPage = () => {
   return (
     <ApolloProvider client={client}>
-      <ViewOrEditCompany />
+      <ViewCreateOrEditCompany />
     </ApolloProvider>
   );
 };
