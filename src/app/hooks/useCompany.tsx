@@ -2,15 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { useApolloClient, useMutation } from "@apollo/client";
+import useCompanies from "./useCompanies";
 import { FormikHelpers } from "formik";
 import { toast } from "react-toastify";
 import {
   CREATE_COMPANY,
   GET_SIGNED_UPLOAD_URL,
-  GetSignedUploadUrlResponse,
-  GetSignedUploadUrlVariables,
+  GET_SIGNED_DOWNLOAD_URL,
 } from "../lib/graphql";
-import { UpdateCompanyInput } from "../lib/graphql-types";
+import {
+  MutationCreateCompanyArgs,
+  UpdateCompanyInput,
+} from "../lib/graphql-types";
 import isEmail from "validator/es/lib/isEmail";
 import isUrl from "validator/es/lib/isURL";
 import isMobilePhone from "validator/es/lib/isMobilePhone";
@@ -53,6 +56,44 @@ export const initialFormData: UpdateCompanyInput = {
     phone: "",
   },
 };
+
+// export const initialFormData: UpdateCompanyInput = {
+//   legalName: "Tech Corp Ltd.",
+//   stateOfIncorporation: "California",
+//   industry: "Software Development",
+//   totalNumberOfEmployees: 0,
+//   numberOfFullTimeEmployees: 0,
+//   numberOfPartTimeEmployees: 0,
+//   website: "https://techcorpltd.com",
+//   linkedInCompanyPage: "https://linkedin.com/company/techcorpltd",
+//   facebookCompanyPage: "https://facebook.com/techcorpltd",
+//   otherInformation: "A leading software company focused on AI solutions.",
+//   phone: "+1 (866) 217-3333",
+//   fax: "+1-800-555-1234",
+//   email: "contact@techcorpltd.com",
+//   registeredAddress: {
+//     country: "USA",
+//     state: "California",
+//     city: "San Francisco",
+//     street: "123 Market Street",
+//     zipCode: "94103",
+//   },
+//   mailingAddress: {
+//     country: "USA",
+//     state: "California",
+//     city: "San Francisco",
+//     street: "456 Mission Street",
+//     zipCode: "94104",
+//   },
+//   isMailingAddressDifferentFromRegisteredAddress: true,
+//   primaryContactPerson: {
+//     firstName: "John",
+//     lastName: "Doe",
+//     email: "john.doe@techcorpltd.com",
+//     phone: "+1-800-555-7890",
+//   },
+//   logoS3Key: "chrome_ROT0zdCbxY-E9-DRrb2Vpyus0S-l6aRS-2025-03-31T11:10:18",
+// };
 
 export const validate = (values: UpdateCompanyInput) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -100,7 +141,10 @@ export const validate = (values: UpdateCompanyInput) => {
     errors.phone = "Invalid phone number";
   }
 
-  if (!values.fax || !isMobilePhone(values.fax || "")) {
+  if (
+    !values.fax ||
+    !new RegExp("^\\(?(\\+?[0-9]*)\\)?[0-9_\\- \\(\\)]*$").test(values.fax)
+  ) {
     errors.fax = "Invalid fax number";
   }
 
@@ -110,7 +154,7 @@ export const validate = (values: UpdateCompanyInput) => {
 
   if (
     !values.linkedInCompanyPage ||
-    !new RegExp("^https:\\/\\/[a-z]{2,3}\\.linkedin\\.com\\/.*$").test(
+    !new RegExp("^https:\\/\\/(?:[a-z]{2,3}\\.)?linkedin\\.com\\/.*$").test(
       values.linkedInCompanyPage || ""
     )
   ) {
@@ -163,37 +207,35 @@ export const validate = (values: UpdateCompanyInput) => {
   }
 
   // Validate mailing address if different from registered
-  if (values.isMailingAddressDifferentFromRegisteredAddress) {
-    if (!values.mailingAddress?.country) {
-      errors.mailingAddress = {
-        ...errors.mailingAddress,
-        country: "Country is required",
-      };
-    }
-    if (!values.mailingAddress?.state) {
-      errors.mailingAddress = {
-        ...errors.mailingAddress,
-        state: "State is required",
-      };
-    }
-    if (!values.mailingAddress?.city) {
-      errors.mailingAddress = {
-        ...errors.mailingAddress,
-        city: "City is required",
-      };
-    }
-    if (!values.mailingAddress?.street) {
-      errors.mailingAddress = {
-        ...errors.mailingAddress,
-        street: "Street is required",
-      };
-    }
-    if (!values.mailingAddress?.zipCode) {
-      errors.mailingAddress = {
-        ...errors.mailingAddress,
-        zipCode: "Zip code is required",
-      };
-    }
+  if (!values.mailingAddress?.country) {
+    errors.mailingAddress = {
+      ...errors.mailingAddress,
+      country: "Country is required",
+    };
+  }
+  if (!values.mailingAddress?.state) {
+    errors.mailingAddress = {
+      ...errors.mailingAddress,
+      state: "State is required",
+    };
+  }
+  if (!values.mailingAddress?.city) {
+    errors.mailingAddress = {
+      ...errors.mailingAddress,
+      city: "City is required",
+    };
+  }
+  if (!values.mailingAddress?.street) {
+    errors.mailingAddress = {
+      ...errors.mailingAddress,
+      street: "Street is required",
+    };
+  }
+  if (!values.mailingAddress?.zipCode) {
+    errors.mailingAddress = {
+      ...errors.mailingAddress,
+      zipCode: "Zip code is required",
+    };
   }
 
   // Validate primary contact person
@@ -246,18 +288,57 @@ export const useCompany = (
   const [formData, setFormData] = useState<UpdateCompanyInput>(initialFormData);
   const [formMode, setFormMode] = useState<FormMode>("create");
   const [fileIsSaving, setFileIsSaving] = useState(false);
+  const [fetchingCompany, setFetchingCompany] = useState(false);
+  const [fetchFailed, setFetchFailed] = useState(false);
+  const { saveCompany, fetchCompanyDetail } = useCompanies({
+    client,
+  });
   const allowedFileTypes = ["image/jpeg", "image/png"];
   const accept = `${allowedFileTypes.join(",")}`;
 
   useEffect(() => {
-    if (companyId) {
-      setFormMode("edit");
-    } else {
+    if (!companyId || fetchFailed) {
       setFormMode("create");
+      return;
     }
-  }, [companyId]);
 
-  useEffect(() => {}, [])
+    const setModeHandler = async () => {
+      try {
+        setFetchingCompany(true);
+
+        const companyToEdit = await fetchCompanyDetail(companyId!);
+
+        if (!companyToEdit) {
+          toast.error("Company not found");
+          setFetchFailed(true); // Prevent retrying on bad ID
+          setFormMode("create");
+          return;
+        }
+
+        setFormData((prev) => ({
+          ...prev,
+          ...(companyToEdit as Partial<UpdateCompanyInput>),
+        }));
+        setFormMode("edit");
+      } catch (err) {
+        let errorMessage = "Failed to fetch company details.";
+
+        if (err instanceof Error) {
+          errorMessage = err.message;
+        }
+        toast.error(errorMessage);
+        setFetchFailed(true); // Prevent retrying on failure
+        setFormMode("create");
+      } finally {
+        setFetchingCompany(false);
+      }
+    };
+
+    const id = setTimeout(setModeHandler, 1000);
+
+    return () => clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [companyId, fetchFailed]);
 
   const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -284,10 +365,7 @@ export const useCompany = (
       }
 
       // Step 1: Get Signed URL from GraphQL
-      const { data } = await client.query<
-        GetSignedUploadUrlResponse,
-        GetSignedUploadUrlVariables
-      >({
+      const { data } = await client.query({
         query: GET_SIGNED_UPLOAD_URL,
         variables: {
           input: {
@@ -298,8 +376,6 @@ export const useCompany = (
       });
 
       const { url, key } = data.getSignedUploadUrl;
-
-      console.log({ url, key });
 
       // Step 2: Upload File to S3
       await fetch(url, {
@@ -321,56 +397,91 @@ export const useCompany = (
     }
   };
 
-  const handleSubmit = async (
+  const getFileUrl = async (key: string) => {
+    try {
+      const { data } = await client.query({
+        query: GET_SIGNED_DOWNLOAD_URL,
+        variables: {
+          s3Key: key,
+        },
+      });
+
+      return data.getSignedDownloadUrl.url;
+    } catch {
+      return "https://www.google.com/imgres?q=placeholder%20image&imgurl=https%3A%2F%2Fpng.pngtree.com%2Fpng-vector%2F20210604%2Fourmid%2Fpngtree-gray-network-placeholder-png-image_3416659.jpg&imgrefurl=https%3A%2F%2Fpngtree.com%2Ffree-png-vectors%2Fplaceholders&docid=29HGEZtc8xV0iM&tbnid=FDbea6Z_zJGhsM&vet=12ahUKEwia5uzbtrWMAxVjfjABHVQzNIsQM3oECGQQAA..i&w=360&h=360&hcb=2&ved=2ahUKEwia5uzbtrWMAxVjfjABHVQzNIsQM3oECGQQAA"
+    }
+  };
+
+  const handleCreate = async (
     values: UpdateCompanyInput,
     { setSubmitting, resetForm }: FormikHelpers<UpdateCompanyInput>
   ) => {
     try {
-      // const { data } = await createCompany({
-      //   variables: { input: values },
-      // });
-      // console.log("Company created:", data);
-      // alert("Company created successfully!");
-      // resetForm();
+      const { data } = await client.mutate({
+        mutation: CREATE_COMPANY,
+        variables: { input: values },
+      });
+
+      const company = data?.createCompany?.company;
+
+      if (!company) {
+        throw new Error("Failed to create company.");
+      }
+
+      saveCompany(company);
+      resetForm();
+      toast.success("Company created successfully.");
     } catch (err) {
-      // console.error("Error creating company:", err);
-      // alert("Failed to create company. Check console for details.");
+      let errorMessage = "Failed to create company.";
+
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+
+      if (typeof err === "object" && err !== null) {
+        const apolloError = err as {
+          graphQLErrors?: { message: string }[];
+          networkError?: Error;
+        };
+
+        if (apolloError.graphQLErrors && apolloError.graphQLErrors.length > 0) {
+          errorMessage = apolloError.graphQLErrors[0].message;
+        } else if (apolloError.networkError instanceof Error) {
+          errorMessage = apolloError.networkError.message;
+        }
+      }
+
+      toast.error(errorMessage);
+    } finally {
+      setSubmitting(false);
     }
-    // setSubmitting(false);
   };
 
-  // const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-
-  //   // try {
-  //   //   const { data } = await createCompany({
-  //   //     variables: {
-  //   //       input: formData,
-  //   //     },
-  //   //   });
-
-  //   //   const newCompany = (data as CreateCompanyResponse).createCompany.company;
-
-  //   //   // Get existing companies from localStorage
-  //   //   const storedCompanies = localStorage.getItem("companies");
-  //   //   const companies: Record<string, any>[] = storedCompanies ? JSON.parse(storedCompanies) : [];
-
-  //   //   // Add the new company to the array
-  //   //   companies.push(newCompany);
-
-  //   //   // Save updated companies array back to localStorage
-  //   //   localStorage.setItem("companies", JSON.stringify(companies));
-
-  //   //   toast.success("Company created successfully!");
-  //   // } catch {
-  //   //   toast.error("Failed to create company.");
-  //   // }
-  // };
+  const handleEdit = async (
+    values: UpdateCompanyInput,
+    { setSubmitting, resetForm }: FormikHelpers<UpdateCompanyInput>
+  ) => {
+    // try {
+    //   setSubmitting(true);
+    //   const { data } = await client.mutate<
+    //     UpdateCompanyResponse,
+    //     UpdateCompanyVariables
+    //   >({
+    //     mutation: CREATE_COMPANY,
+    //     variables: { input: values },
+    //   });
+    // } catch (err) {
+    //   toast.error("Failed to create company.");
+    // } finally {
+    //   resetForm();
+    //   setSubmitting(false);
+    // }
+  };
 
   return {
     formData,
-    handleChange,
-    handleSubmit,
+    handleCreate,
+    handleEdit,
     handleFileUpload,
     initialFormData,
     validate,
@@ -378,5 +489,7 @@ export const useCompany = (
     allowedFileTypes,
     accept,
     fileIsSaving,
+    fetchingCompany,
+    getFileUrl,
   };
 };

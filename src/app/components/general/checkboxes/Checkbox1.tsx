@@ -17,13 +17,14 @@ export default function Checkbox1({
   name,
 }: Checkbox1Props) {
   return (
-    <div className={twMerge("flex items-center space-x-2 cursor-pointer", className)}>
+    <div className={twMerge("flex items-center space-x-2", className)}>
       <input
         type="checkbox"
         onChange={onChange}
         checked={checked}
         name={name}
         role="checkbox"
+        className="cursor-pointer"
       />
       {label && (
         <label role="aria-checkbox" className="text-sm">

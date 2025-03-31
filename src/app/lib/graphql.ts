@@ -1,10 +1,4 @@
 import { gql } from "@apollo/client";
-import {
-  QueryGetSignedUploadUrlArgs,
-  MutationCreateCompanyArgs,
-  SignedLinkData,
-  UpdateCompanyResponse,
-} from "./graphql-types";
 
 export const GET_SIGNED_UPLOAD_URL = gql`
   query GetSignedUploadUrl($input: SignedFileUploadInput!) {
@@ -59,14 +53,53 @@ export const CREATE_COMPANY = gql`
   }
 `;
 
-export type GetSignedUploadUrlResponse = {
-  getSignedUploadUrl: SignedLinkData;
-};
+export const GET_COMPANY = gql`
+  query GetCompany($id: String) {
+    getCompany(id: $id) {
+      id
+      legalName
+      email
+      phone
+      industry
+      website
+      facebookCompanyPage
+      linkedInCompanyPage
+      fax
+      logoS3Key
+      numberOfFullTimeEmployees
+      numberOfPartTimeEmployees
+      totalNumberOfEmployees
+      stateOfIncorporation
+      otherInformation
+      registeredAddress {
+        street
+        city
+        state
+        country
+        zipCode
+      }
+      mailingAddress {
+        street
+        city
+        state
+        country
+        zipCode
+      }
+      primaryContactPerson {
+        firstName
+        lastName
+        email
+        phone
+      }
+    }
+  }
+`;
 
-export type GetSignedUploadUrlVariables = QueryGetSignedUploadUrlArgs;
-
-export type CreateCompanyResponse = {
-  createCompany: UpdateCompanyResponse;
-};
-
-export type CreateCompanyVariables = MutationCreateCompanyArgs;
+export const GET_SIGNED_DOWNLOAD_URL = gql`
+  query GetSignedDownloadUrl($s3Key: String) {
+    getSignedDownloadUrl(s3Key: $s3Key) {
+      url
+      key
+    }
+  }
+`;

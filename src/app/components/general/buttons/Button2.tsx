@@ -11,10 +11,13 @@ export default function Button2({
 }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
-      className={twMerge(
-        "w-full lg:w-[300px] bg-black text-white px-6 py-2 rounded-md",
-        className
-      )}
+    className={twMerge(
+      "w-full lg:w-[300px] px-6 py-2 rounded-md disabled:opacity-80 cursor-pointer disabled:cursor-not-allowed",
+      type === "button"
+        ? "bg-gray-500 text-white hover:bg-gray-600"
+        : "bg-black text-white hover:bg-gray-800", // Default style for other types
+      className
+    )}
       type={type || "button"}
       disabled={disabled}
       onClick={onClick}
