@@ -9,7 +9,7 @@ const NavBar = () => {
     <nav className="w-full h-[80px] overflow-hidden shadow-xs flex justify-between items-center p-5 px-[40px]">
       <Link href={"/companies"}><IoHomeOutline className="text-[25px] text-[#646464]" /></Link>
       <div className="w-[600px] flex justify-between items-center gap-5">
-        <Link className="w-[280px] flex items-center gap-1" href={"/create-company"}>
+        <Link className="w-[280px] flex items-center gap-1" href={"/create-or-edit-company"}>
           <span className="font-semibold">Create Company</span>
           <IoIosAddCircleOutline className="text-[25px] text-[#646464]" />
         </Link>

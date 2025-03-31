@@ -33,6 +33,7 @@ export const CREATE_COMPANY = gql`
         logoS3Key
         phone
         fax
+        email
         registeredAddress {
           country
           state
@@ -47,7 +48,6 @@ export const CREATE_COMPANY = gql`
           street
           zipCode
         }
-        isMailingAddressDifferentFromRegisteredAddress
       }
     }
   }
