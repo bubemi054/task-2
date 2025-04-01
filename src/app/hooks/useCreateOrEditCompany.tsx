@@ -1,99 +1,90 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useApolloClient, useMutation } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
 import useCompanies from "./useCompanies";
 import { FormikHelpers } from "formik";
 import { toast } from "react-toastify";
-import {
-  CREATE_COMPANY,
-  GET_SIGNED_UPLOAD_URL,
-  GET_SIGNED_DOWNLOAD_URL,
-} from "../lib/graphql";
-import {
-  MutationCreateCompanyArgs,
-  UpdateCompanyInput,
-} from "../lib/graphql-types";
+import { UpdateCompanyInput } from "../lib/graphql-types";
 import isEmail from "validator/es/lib/isEmail";
 import isUrl from "validator/es/lib/isURL";
 import isMobilePhone from "validator/es/lib/isMobilePhone";
-// import { FormData, HandleChangeEvent, HandleSubmitEvent, CreateCompanyResponse } from "../types";
-
-export const initialFormData: UpdateCompanyInput = {
-  legalName: "",
-  stateOfIncorporation: "",
-  industry: "",
-  totalNumberOfEmployees: undefined,
-  numberOfFullTimeEmployees: undefined,
-  numberOfPartTimeEmployees: undefined,
-  website: "",
-  linkedInCompanyPage: "",
-  facebookCompanyPage: "",
-  otherInformation: "",
-  phone: "",
-  fax: "",
-  email: "",
-  logoS3Key: "",
-  isMailingAddressDifferentFromRegisteredAddress: false,
-  registeredAddress: {
-    country: "",
-    state: "",
-    city: "",
-    street: "",
-    zipCode: "",
-  },
-  mailingAddress: {
-    country: "",
-    state: "",
-    city: "",
-    street: "",
-    zipCode: "",
-  },
-  primaryContactPerson: {
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-  },
-};
 
 // export const initialFormData: UpdateCompanyInput = {
-//   legalName: "Tech Corp Ltd.",
-//   stateOfIncorporation: "California",
-//   industry: "Software Development",
-//   totalNumberOfEmployees: 0,
-//   numberOfFullTimeEmployees: 0,
-//   numberOfPartTimeEmployees: 0,
-//   website: "https://techcorpltd.com",
-//   linkedInCompanyPage: "https://linkedin.com/company/techcorpltd",
-//   facebookCompanyPage: "https://facebook.com/techcorpltd",
-//   otherInformation: "A leading software company focused on AI solutions.",
-//   phone: "+1 (866) 217-3333",
-//   fax: "+1-800-555-1234",
-//   email: "contact@techcorpltd.com",
+//   legalName: "",
+//   stateOfIncorporation: "",
+//   industry: "",
+//   totalNumberOfEmployees: undefined,
+//   numberOfFullTimeEmployees: undefined,
+//   numberOfPartTimeEmployees: undefined,
+//   website: "",
+//   linkedInCompanyPage: "",
+//   facebookCompanyPage: "",
+//   otherInformation: "",
+//   phone: "",
+//   fax: "",
+//   email: "",
+//   logoS3Key: "",
+//   isMailingAddressDifferentFromRegisteredAddress: false,
 //   registeredAddress: {
-//     country: "USA",
-//     state: "California",
-//     city: "San Francisco",
-//     street: "123 Market Street",
-//     zipCode: "94103",
+//     country: "",
+//     state: "",
+//     city: "",
+//     street: "",
+//     zipCode: "",
 //   },
 //   mailingAddress: {
-//     country: "USA",
-//     state: "California",
-//     city: "San Francisco",
-//     street: "456 Mission Street",
-//     zipCode: "94104",
+//     country: "",
+//     state: "",
+//     city: "",
+//     street: "",
+//     zipCode: "",
 //   },
-//   isMailingAddressDifferentFromRegisteredAddress: true,
 //   primaryContactPerson: {
-//     firstName: "John",
-//     lastName: "Doe",
-//     email: "john.doe@techcorpltd.com",
-//     phone: "+1-800-555-7890",
+//     firstName: "",
+//     lastName: "",
+//     email: "",
+//     phone: "",
 //   },
-//   logoS3Key: "chrome_ROT0zdCbxY-E9-DRrb2Vpyus0S-l6aRS-2025-03-31T11:10:18",
 // };
+
+export const initialFormData: UpdateCompanyInput = {
+  legalName: "Tech Corp Ltd.",
+  stateOfIncorporation: "California",
+  industry: "Software Development",
+  totalNumberOfEmployees: 0,
+  numberOfFullTimeEmployees: 0,
+  numberOfPartTimeEmployees: 0,
+  website: "https://techcorpltd.com",
+  linkedInCompanyPage: "https://linkedin.com/company/techcorpltd",
+  facebookCompanyPage: "https://facebook.com/techcorpltd",
+  otherInformation: "A leading software company focused on AI solutions.",
+  phone: "+1 (866) 217-3333",
+  fax: "+1-800-555-1234",
+  email: "contact@techcorpltd.com",
+  registeredAddress: {
+    country: "USA",
+    state: "California",
+    city: "San Francisco",
+    street: "123 Market Street",
+    zipCode: "94103",
+  },
+  mailingAddress: {
+    country: "USA",
+    state: "California",
+    city: "San Francisco",
+    street: "456 Mission Street",
+    zipCode: "94104",
+  },
+  isMailingAddressDifferentFromRegisteredAddress: true,
+  primaryContactPerson: {
+    firstName: "John",
+    lastName: "Doe",
+    email: "john.doe@techcorpltd.com",
+    phone: "+1-800-555-7890",
+  },
+  logoS3Key: "chrome_ROT0zdCbxY-E9-DRrb2Vpyus0S-l6aRS-2025-03-31T11:10:18",
+};
 
 export const validate = (values: UpdateCompanyInput) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -279,7 +270,7 @@ export const validate = (values: UpdateCompanyInput) => {
 
 type FormMode = "create" | "edit";
 
-export const useCompany = (
+export const useCreateOrEditCompany = (
   client: ReturnType<typeof useApolloClient>,
   companyId?: string | null
 ) => {
@@ -290,7 +281,16 @@ export const useCompany = (
   const [fileIsSaving, setFileIsSaving] = useState(false);
   const [fetchingCompany, setFetchingCompany] = useState(false);
   const [fetchFailed, setFetchFailed] = useState(false);
-  const { saveCompany, fetchCompanyDetail } = useCompanies({
+  const {
+    createCompany,
+    updateCompany,
+    saveCompanyLocally,
+    fetchCompany,
+    saveFileImage,
+    getFileImage,
+    extractFilename,
+    editCompanyLocally,
+  } = useCompanies({
     client,
   });
   const allowedFileTypes = ["image/jpeg", "image/png"];
@@ -306,11 +306,11 @@ export const useCompany = (
       try {
         setFetchingCompany(true);
 
-        const companyToEdit = await fetchCompanyDetail(companyId!);
+        const companyToEdit = await fetchCompany(companyId!);
 
         if (!companyToEdit) {
           toast.error("Company not found");
-          setFetchFailed(true); // Prevent retrying on bad ID
+          setFetchFailed(true);
           setFormMode("create");
           return;
         }
@@ -327,7 +327,7 @@ export const useCompany = (
           errorMessage = err.message;
         }
         toast.error(errorMessage);
-        setFetchFailed(true); // Prevent retrying on failure
+        setFetchFailed(true);
         setFormMode("create");
       } finally {
         setFetchingCompany(false);
@@ -346,49 +346,13 @@ export const useCompany = (
   ) => {
     try {
       setFileIsSaving(true);
+      const toastId = toast.info("Uploading image!");
       const file = e.target.files?.[0];
-      if (!file) return;
-      toast.info("Uploading image!");
+      const { key } = await saveFileImage(file);
 
-      // Validate file type
-      const allowedTypes = ["image/jpeg", "image/png"];
-      if (!allowedTypes.includes(file.type)) {
-        toast.info("Only JPEG and PNG files are allowed.");
-        return;
-      }
-
-      // Validate file size (Max 2MB)
-      const maxSize = 2 * 1024 * 1024; // 2MB
-      if (file.size > maxSize) {
-        toast.info("File size must be less than 2MB.");
-        return;
-      }
-
-      // Step 1: Get Signed URL from GraphQL
-      const { data } = await client.query({
-        query: GET_SIGNED_UPLOAD_URL,
-        variables: {
-          input: {
-            fileName: file.name,
-            contentType: file.type,
-          },
-        },
-      });
-
-      const { url, key } = data.getSignedUploadUrl;
-
-      // Step 2: Upload File to S3
-      await fetch(url, {
-        method: "PUT",
-        body: file,
-        headers: {
-          "Content-Type": file.type,
-        },
-      });
-
-      // Step 3: Save file key in formData
       setFieldValue?.("logoS3Key", key);
 
+      toast.dismiss(toastId);
       toast.success("File uploaded successfully:");
     } catch {
       toast.error("File upload failed:");
@@ -397,38 +361,14 @@ export const useCompany = (
     }
   };
 
-  const getFileUrl = async (key: string) => {
-    try {
-      const { data } = await client.query({
-        query: GET_SIGNED_DOWNLOAD_URL,
-        variables: {
-          s3Key: key,
-        },
-      });
-
-      return data.getSignedDownloadUrl.url;
-    } catch {
-      return "https://www.google.com/imgres?q=placeholder%20image&imgurl=https%3A%2F%2Fpng.pngtree.com%2Fpng-vector%2F20210604%2Fourmid%2Fpngtree-gray-network-placeholder-png-image_3416659.jpg&imgrefurl=https%3A%2F%2Fpngtree.com%2Ffree-png-vectors%2Fplaceholders&docid=29HGEZtc8xV0iM&tbnid=FDbea6Z_zJGhsM&vet=12ahUKEwia5uzbtrWMAxVjfjABHVQzNIsQM3oECGQQAA..i&w=360&h=360&hcb=2&ved=2ahUKEwia5uzbtrWMAxVjfjABHVQzNIsQM3oECGQQAA"
-    }
-  };
-
   const handleCreate = async (
     values: UpdateCompanyInput,
     { setSubmitting, resetForm }: FormikHelpers<UpdateCompanyInput>
   ) => {
     try {
-      const { data } = await client.mutate({
-        mutation: CREATE_COMPANY,
-        variables: { input: values },
-      });
-
-      const company = data?.createCompany?.company;
-
-      if (!company) {
-        throw new Error("Failed to create company.");
-      }
-
-      saveCompany(company);
+      setSubmitting(true);
+      const company = await createCompany(values);
+      saveCompanyLocally(company);
       resetForm();
       toast.success("Company created successfully.");
     } catch (err) {
@@ -457,31 +397,47 @@ export const useCompany = (
     }
   };
 
-  const handleEdit = async (
+  const handleUpdate = async (
     values: UpdateCompanyInput,
-    { setSubmitting, resetForm }: FormikHelpers<UpdateCompanyInput>
+    { setSubmitting, setValues }: FormikHelpers<UpdateCompanyInput>
   ) => {
-    // try {
-    //   setSubmitting(true);
-    //   const { data } = await client.mutate<
-    //     UpdateCompanyResponse,
-    //     UpdateCompanyVariables
-    //   >({
-    //     mutation: CREATE_COMPANY,
-    //     variables: { input: values },
-    //   });
-    // } catch (err) {
-    //   toast.error("Failed to create company.");
-    // } finally {
-    //   resetForm();
-    //   setSubmitting(false);
-    // }
+    try {
+      setSubmitting(true);
+      const company = await updateCompany(companyId!, values);
+      console.log({ company });
+      editCompanyLocally(company);
+      setValues(company as Partial<UpdateCompanyInput>);
+      toast.success("Company updated successfully.");
+    } catch (err) {
+      let errorMessage = "Failed to update company.";
+
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+
+      if (typeof err === "object" && err !== null) {
+        const apolloError = err as {
+          graphQLErrors?: { message: string }[];
+          networkError?: Error;
+        };
+
+        if (apolloError.graphQLErrors && apolloError.graphQLErrors.length > 0) {
+          errorMessage = apolloError.graphQLErrors[0].message;
+        } else if (apolloError.networkError instanceof Error) {
+          errorMessage = apolloError.networkError.message;
+        }
+      }
+
+      toast.error(errorMessage);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return {
     formData,
     handleCreate,
-    handleEdit,
+    handleUpdate,
     handleFileUpload,
     initialFormData,
     validate,
@@ -490,6 +446,7 @@ export const useCompany = (
     accept,
     fileIsSaving,
     fetchingCompany,
-    getFileUrl,
+    getFileImage,
+    extractFilename,
   };
 };

@@ -52,6 +52,51 @@ export const CREATE_COMPANY = gql`
     }
   }
 `;
+export const UPDATE_COMPANY = gql`
+  mutation UpdateCompany($companyId: ID!, $input: UpdateCompanyInput!) {
+    updateCompany(companyId: $companyId, input: $input) {
+      company {
+        id
+        legalName
+        stateOfIncorporation
+        industry
+        totalNumberOfEmployees
+        numberOfFullTimeEmployees
+        numberOfPartTimeEmployees
+        website
+        linkedInCompanyPage
+        facebookCompanyPage
+        otherInformation
+        primaryContactPerson {
+          firstName
+          lastName
+          email
+          phone
+        }
+        logoS3Key
+        phone
+        fax
+        email
+        registeredAddress {
+          isMailingAddressDifferentFromRegisteredAddress
+          country
+          state
+          city
+          street
+          zipCode
+        }
+        mailingAddress {
+          isMailingAddressDifferentFromRegisteredAddress
+          country
+          state
+          city
+          street
+          zipCode
+        }
+      }
+    }
+  }
+`;
 
 export const GET_COMPANY = gql`
   query GetCompany($id: String) {

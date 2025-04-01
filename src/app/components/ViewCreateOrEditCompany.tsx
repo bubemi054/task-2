@@ -1,7 +1,6 @@
 "use client";
 
 import { Formik } from "formik";
-import NavBar from "./Navbar";
 import FormInput from "./general/inputs/FormInput";
 import Header1 from "./general/headers/Header1";
 import Heading2 from "./general/headers/Heading2";
@@ -13,7 +12,7 @@ import { FaSpinner } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
 import { useApolloClient } from "@apollo/client";
 import { useUserSessionChecker } from "../hooks/useUserSessionChecker";
-import { useCompany } from "../hooks/useCompany";
+import { useCreateOrEditCompany } from "../hooks/useCreateOrEditCompany";
 
 const ViewCreateOrEditCompany = () => {
   useUserSessionChecker();
@@ -24,16 +23,16 @@ const ViewCreateOrEditCompany = () => {
   const {
     formData,
     handleCreate,
-    handleEdit,
+    handleUpdate,
     handleFileUpload,
-    initialFormData,
     validate,
     accept,
     formMode,
     fileIsSaving,
     fetchingCompany,
-    getFileUrl,
-  } = useCompany(client, companyID);
+    getFileImage,
+    extractFilename,
+  } = useCreateOrEditCompany(client, companyID);
 
   if (fetchingCompany) {
     return (
@@ -50,7 +49,7 @@ const ViewCreateOrEditCompany = () => {
           <Formik
             initialValues={formData}
             validate={validate}
-            onSubmit={formMode == "create" ? handleCreate : handleEdit}
+            onSubmit={formMode == "create" ? handleCreate : handleUpdate}
           >
             {({
               values,
@@ -155,7 +154,7 @@ const ViewCreateOrEditCompany = () => {
 
               return (
                 <>
-                  <div className="flex flex-col justify-start items-start">
+                  <div className="flex flex-col justify-start items-start mb-[30px]">
                     <Header1 className="mb-[10px]">Company Information</Header1>
                     {formMode == "edit" && (
                       <Paragraph1 className="">ID: #{companyID}</Paragraph1>
@@ -168,8 +167,9 @@ const ViewCreateOrEditCompany = () => {
                   </div>
                   <Image1
                     logoS3Key={values.logoS3Key || ""}
-                    getFileUrl={getFileUrl}
+                    getFileImage={getFileImage}
                     alt="company logo"
+                    className="mb-[30px]"
                   />
                   <form
                     onSubmit={handleSubmit}
@@ -396,12 +396,12 @@ const ViewCreateOrEditCompany = () => {
                         name="logoS3Key"
                         onChange={(e) => handleFileUpload(e, setFieldValue)}
                         type="file"
-                        value=""
-                        // value={values.logoS3Key || ""}
-                        // handleBlur={handleBlur}
+                        value={values.logoS3Key || ""}
+                        handleBlur={handleBlur}
                         loading={fileIsSaving}
                         errorMessage={errors.logoS3Key}
                         accept={accept}
+                        extractFilename={extractFilename}
                         required
                       />
                     </div>
