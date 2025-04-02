@@ -1,20 +1,20 @@
 "use client";
 
+import { ChangeEvent } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { HandleSubmitEvent, HandleChangeEvent } from "../types";
 import { toast } from "react-toastify";
 
 export const useLoginForm = () => {
-  const navigate = useRouter();
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ username: "", password: "" });
 
-  const handleChange = (e: HandleChangeEvent) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: HandleSubmitEvent) => {
+  const handleSubmit = (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!formData.username && !formData.password)
@@ -41,8 +41,8 @@ export const useLoginForm = () => {
     }, 1000);
 
     setTimeout(() => {
-      navigate.push("/companies");
-    }, 4000);
+      router.push("/companies");
+    }, 3000);
   };
 
   return {

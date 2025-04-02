@@ -33,6 +33,7 @@ export const CREATE_COMPANY = gql`
         logoS3Key
         phone
         fax
+        email
         registeredAddress {
           country
           state
@@ -47,8 +48,103 @@ export const CREATE_COMPANY = gql`
           street
           zipCode
         }
-        isMailingAddressDifferentFromRegisteredAddress
       }
+    }
+  }
+`;
+export const UPDATE_COMPANY = gql`
+  mutation UpdateCompany($companyId: ID!, $input: UpdateCompanyInput!) {
+    updateCompany(companyId: $companyId, input: $input) {
+      company {
+        id
+        legalName
+        stateOfIncorporation
+        industry
+        totalNumberOfEmployees
+        numberOfFullTimeEmployees
+        numberOfPartTimeEmployees
+        website
+        linkedInCompanyPage
+        facebookCompanyPage
+        otherInformation
+        primaryContactPerson {
+          firstName
+          lastName
+          email
+          phone
+        }
+        logoS3Key
+        phone
+        fax
+        email
+        registeredAddress {
+          isMailingAddressDifferentFromRegisteredAddress
+          country
+          state
+          city
+          street
+          zipCode
+        }
+        mailingAddress {
+          isMailingAddressDifferentFromRegisteredAddress
+          country
+          state
+          city
+          street
+          zipCode
+        }
+      }
+    }
+  }
+`;
+
+export const GET_COMPANY = gql`
+  query GetCompany($id: String) {
+    getCompany(id: $id) {
+      id
+      legalName
+      email
+      phone
+      industry
+      website
+      facebookCompanyPage
+      linkedInCompanyPage
+      fax
+      logoS3Key
+      numberOfFullTimeEmployees
+      numberOfPartTimeEmployees
+      totalNumberOfEmployees
+      stateOfIncorporation
+      otherInformation
+      registeredAddress {
+        street
+        city
+        state
+        country
+        zipCode
+      }
+      mailingAddress {
+        street
+        city
+        state
+        country
+        zipCode
+      }
+      primaryContactPerson {
+        firstName
+        lastName
+        email
+        phone
+      }
+    }
+  }
+`;
+
+export const GET_SIGNED_DOWNLOAD_URL = gql`
+  query GetSignedDownloadUrl($s3Key: String) {
+    getSignedDownloadUrl(s3Key: $s3Key) {
+      url
+      key
     }
   }
 `;

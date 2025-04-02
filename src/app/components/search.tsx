@@ -1,5 +1,5 @@
 import { CiSearch } from "react-icons/ci";
-import { useSearch } from "../hooks/search";
+import { useSearch } from "../hooks/useSearch";
 
 const Search = () => {
   const { searchTerm, setSearchTerm } = useSearch();

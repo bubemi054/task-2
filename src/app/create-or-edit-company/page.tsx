@@ -1,13 +1,15 @@
-"use client"
+"use client";
 
-import CompanyForm from "../components/create-company-form";
+import ViewCreateOrEditCompany from "../components/ViewCreateOrEditCompany";
 import { ApolloProvider } from "@apollo/client";
+import NavBar from "../components/Navbar";
 import { client } from "../lib/apollo-client";
 
 const CompanyPage = () => {
   return (
     <ApolloProvider client={client}>
-      <CompanyForm />
+      <NavBar />
+      <ViewCreateOrEditCompany />
     </ApolloProvider>
   );
 };

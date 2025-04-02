@@ -1,0 +1,43 @@
+{
+  "data": {
+    "createCompany": {
+      "company": {
+        "id": "9a586256-704c-46b4-aa1e-14e95b7e9465",
+        "legalName": "Tech Corp Ltd.",
+        "stateOfIncorporation": "California",
+        "industry": "Software Development",
+        "totalNumberOfEmployees": 200,
+        "numberOfFullTimeEmployees": 180,
+        "numberOfPartTimeEmployees": 20,
+        "website": "https://techcorpltd.com",
+        "linkedInCompanyPage": "https://linkedin.com/company/techcorpltd",
+        "facebookCompanyPage": "https://facebook.com/techcorpltd",
+        "otherInformation": "A leading software company focused on AI solutions.",
+        "phone": "+1-800-123-4567",
+        "fax": "+1-800-123-4568",
+        "email": "contact@techcorpltd.com",
+        "registeredAddress": {
+          "country": "USA",
+          "state": "California",
+          "city": "San Francisco",
+          "street": "123 Market Street",
+          "zipCode": "94103"
+        },
+        "mailingAddress": {
+          "country": "USA",
+          "state": "California",
+          "city": "San Francisco",
+          "street": "456 Mission Street",
+          "zipCode": "94104"
+        },
+        "primaryContactPerson": {
+          "firstName": "John",
+          "lastName": "Doe",
+          "email": "john.doe@techcorpltd.com",
+          "phone": "+1-800-555-7890"
+        },
+        "logoS3Key": "chrome_ROT0zdCbxY-E9-DRrb2Vpyus0S-l6aRS-2025-03-31T11:10:18"
+      }
+    }
+  }
+}

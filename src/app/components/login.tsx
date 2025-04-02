@@ -1,14 +1,20 @@
-import Image from "next/image"
-import LoginImg from "@/public/login-bg.webp"
-import LoginForm from "./loginForm"
+import Image from "next/image";
+import LoginImg from "@/public/login-bg.webp";
+import LoginForm from "./LoginForm";
 
 const Login = () => {
-    return (
-        <div className="w-full h-[100vh] overflow-hidden relative">
-            <Image className="w-full h-[100%] absolute object-cover top-0 left-0 z-0" src={LoginImg} alt="Login PG" width={1000} height={1000} />
-            <LoginForm />
-        </div>
-    )
-}
+  return (
+    <div className="w-full min-h-screen overflow-hidden relative flex items-center justify-center">
+      <Image
+        className="w-full h-full absolute object-cover top-0 left-0 z-0"
+        src={LoginImg}
+        alt="Login BG"
+        layout="fill"
+        priority
+      />
+      <LoginForm />
+    </div>
+  );
+};
 
-export default Login
+export default Login;
