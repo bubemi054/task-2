@@ -38,11 +38,11 @@ export const useLoginForm = () => {
 
     setTimeout(() => {
       toast.success("User Authenticated Successfully!");
-    }, 2000);
+    }, 1000);
 
     setTimeout(() => {
       navigate.push("/companies");
-    }, 3000);
+    }, 4000);
   };
 
   return {

@@ -46,7 +46,7 @@ export const useCreateCompanyForm = (
       street: "",
       zipCode: "",
     },
-    isMailingAddressDifferentFromRegisteredAddress: false,
+    isMailingAddressDifferentFromRegisteredAddress: false,zz
   });
 
   const handleChange = (
