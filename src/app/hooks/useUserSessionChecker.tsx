@@ -1,42 +1,56 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
-export const useUserSessionChecker = () => {
+const useUserSessionChecker = () => {
   const router = useRouter();
+
+  const clearSession = useCallback(() => {
+    console.log("Clearing session and redirecting...");
+    localStorage.removeItem("session");
+    router.push("/");
+  }, [router]);
 
   useEffect(() => {
     if (typeof window === "undefined") return; // Ensure it's client-side
 
+    let timeoutId: NodeJS.Timeout;
+
     const checkSession = () => {
       const sessionData = localStorage.getItem("session");
 
-      if (sessionData) {
-        const { sessionId, expiresAt } = JSON.parse(sessionData);
-        const now = new Date();
+      try {
+        const parsedData = sessionData ? JSON.parse(sessionData) : null;
 
-        if (new Date(expiresAt) < now) {
-          console.log("Session expired, clearing...");
-          localStorage.removeItem("session");
-          router.push("/"); // Redirect to login page
-        } else {
-          console.log("Session is still valid:", sessionId);
+        if (!parsedData || !parsedData.sessionId || !parsedData.expiresAt) {
+          console.log("Invalid session data, redirecting...");
+          clearSession();
+          return;
         }
-      } else {
-        console.log("No active session.");
-        router.push("/"); // Redirect to login page
+
+        const { sessionId, expiresAt } = parsedData;
+        const now = new Date();
+        const target = new Date(expiresAt);
+        const diff = target.getTime() - now.getTime();
+
+        timeoutId = setTimeout(() => {
+          console.log("clearing session", sessionId);
+          clearSession();
+        }, diff); // Schedule next check
+      } catch (error) {
+        console.error("Error parsing session data:", error);
+        clearSession();
       }
     };
 
     // Run immediately on mount
     checkSession();
 
-    // Set interval to run every 5 minutes (300,000 ms)
-    const intervalId = setInterval(checkSession, 300000);
+    return () => clearTimeout(timeoutId); // Cleanup on unmount
+  }, [router, clearSession]);
 
-    return () => clearInterval(intervalId); // Cleanup on unmount
-  }, [router]);
-
-  return null;
+  return { clearSession };
 };
+
+export default useUserSessionChecker;

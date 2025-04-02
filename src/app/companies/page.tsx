@@ -1,4 +1,4 @@
-import Companies from "../components/companies";
+import Companies from "../components/Companies";
 
 const CompaniesPage = () => {
   return <Companies />;

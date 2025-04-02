@@ -28,6 +28,8 @@ interface useCompaniesProps {
 
 export default function useCompanies({ client }: useCompaniesProps) {
   const [companies, setCompanies] = useState<Company[]>([]);
+  const [search, setSearch] = useState<string>("");
+  const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([]);
 
   useEffect(() => {
     const storedCompanies = localStorage.getItem(STORAGE_KEY);
@@ -35,6 +37,28 @@ export default function useCompanies({ client }: useCompaniesProps) {
       setCompanies(JSON.parse(storedCompanies));
     }
   }, []);
+
+  useEffect(() => {
+    const filterCompanies = () => {
+      const filtered = companies.filter((company) => {
+        const legalName = company?.legalName || "";
+        const industry = company?.industry || "";
+        const email = company?.email || "";
+        const target = `${legalName} ${industry} ${email}`.toLowerCase();
+        return target.includes(search.toLowerCase());
+      });
+
+      setFilteredCompanies(filtered);
+    };
+
+    const id = setTimeout(() => {
+      filterCompanies();
+    }, 200);
+
+    return () => {
+      clearTimeout(id);
+    };
+  }, [companies, search]);
 
   const saveCompanyLocally = (company: Company) => {
     const updatedCompanies = [...companies, company];
@@ -244,5 +268,8 @@ export default function useCompanies({ client }: useCompaniesProps) {
     saveFileImage,
     getFileImage,
     extractFilename,
+    filteredCompanies,
+    setSearch,
+    search,
   };
 }

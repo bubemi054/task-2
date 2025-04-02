@@ -1,43 +1,47 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useUserSessionChecker } from "../hooks/useUserSessionChecker";
-import { Company } from "../types";
+import useUserSessionChecker from "../hooks/useUserSessionChecker";
 import NavBar from "./Navbar";
-
-const CompanyCard = ({ company }: { company: Company }) => {
-  return (
-    <div className="w-[304px] h-[304px] bg-[#F0F0F0] rounded-[20px] p-[20px] flex flex-col justify-center items-center">
-      <span className="font-bold">{company.legalName}</span>
-      <span>{company.industry}</span>
-      <span>{company.email}</span>
-    </div>
-  );
-};
+import CompanyCard from "./CompanyCard";
+import { client } from "../lib/apollo-client";
+import useCompanies from "../hooks/useCompanies";
 
 const Companies = () => {
-  useUserSessionChecker();
-  const [companies, setCompanies] = useState([]);
-
-  useEffect(() => {
-    const storedCompanies = localStorage.getItem("companies");
-    if (storedCompanies) {
-      setCompanies(JSON.parse(storedCompanies));
-    }
-  }, []);
+  const { clearSession } = useUserSessionChecker();
+  const { setSearch, search, filteredCompanies, companies, getFileImage } =
+    useCompanies({
+      client,
+    });
 
   return (
     <>
-      <NavBar />
-      <div className="w-[85%] mt-[50px] mx-auto flex flex-wrap gap-[20px]">
-        {companies.length > 0 ? (
-          companies.map((company, index) => (
-            <CompanyCard key={index} company={company} />
-          ))
-        ) : (
-          <p>No companies available.</p>
-        )}
-      </div>
+      <NavBar
+        clearSession={clearSession}
+        search={search}
+        setSearch={setSearch}
+      />
+      {filteredCompanies.length > 0 && (
+        <div className="w-[95%] mt-[50px] mx-auto flex flex-wrap gap-[20px]">
+          {filteredCompanies.map((company, index) => (
+            <CompanyCard
+              key={index}
+              company={company}
+              getFileImage={getFileImage}
+            />
+          ))}
+        </div>
+      )}
+
+      {companies.length === 0 && (
+        <div className="mt-[50px] text-center h-[100px]">
+          No companies available.
+        </div>
+      )}
+      {companies.length != 0 && filteredCompanies.length === 0 && (
+        <div className="mt-[50px] text-center h-[100px]">
+          No companies match your search.
+        </div>
+      )}
     </>
   );
 };

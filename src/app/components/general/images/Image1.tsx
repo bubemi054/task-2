@@ -10,7 +10,6 @@ interface Image1Props extends React.ImgHTMLAttributes<HTMLImageElement> {
 
 export default function Image1({
   alt,
-  className,
   logoS3Key,
   getFileImage,
 }: Image1Props) {
@@ -43,8 +42,7 @@ export default function Image1({
   return (
     <div
       className={twMerge(
-        "relative h-auto w-full aspect-square max-h-[70vh]",
-        className
+        "w-[90%] h-[90%] aspect-square relative rounded-lg border"
       )}
     >
       {loading || !url ? (
@@ -52,7 +50,7 @@ export default function Image1({
           <FaRegImage size={50} />
         </div>
       ) : (
-        <Image className="rounded-lg " src={url} alt={alt || ""} fill />
+        <Image className="w-full h-full object-cover rounded-lg" src={url} alt={alt || ""} width={1000} height={1000} />
       )}
     </div>
   );

@@ -1,5 +1,6 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
+import { VscEye } from "react-icons/vsc";
 
 interface FormInputProps {
   label: string;
@@ -18,6 +19,7 @@ interface FormInputProps {
   max?: number;
   loading?: boolean;
   disabled?: boolean;
+  setViewImg?: () => void;
 }
 
 export default function FormInput({
@@ -37,6 +39,7 @@ export default function FormInput({
   max,
   loading,
   disabled,
+  setViewImg,
 }: FormInputProps) {
   return (
     <div
@@ -53,7 +56,7 @@ export default function FormInput({
       )}
 
       {type === "file" ? (
-        <div>
+        <div className="flex items-center gap-3">
           {/* Label triggers hidden input */}
           <label
             htmlFor={name}
@@ -77,6 +80,7 @@ export default function FormInput({
             accept={accept}
             disabled={disabled || loading}
           />
+          {value && <span className="flex items-center gap-2 border rounded-md p-2 bg-gray-700 text-white cursor-pointer" onClick={setViewImg}>Preview <VscEye className="text-[20px]" /></span>}
         </div>
       ) : (
         <input

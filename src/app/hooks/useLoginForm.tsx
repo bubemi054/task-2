@@ -3,7 +3,9 @@
 import { ChangeEvent } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import { toast, Id } from "react-toastify";
+
+const STORAGE_KEY = "session";
 
 export const useLoginForm = () => {
   const router = useRouter();
@@ -34,14 +36,17 @@ export const useLoginForm = () => {
     };
 
     // Save to localStorage as JSON string
-    localStorage.setItem("session", JSON.stringify(sessionData));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionData));
+
+    let toastId: Id
 
     setTimeout(() => {
-      toast.success("User Authenticated Successfully!");
-    }, 2000);
+      toastId = toast.success("User Authenticated Successfully!");
+    }, 1000);
 
     setTimeout(() => {
       router.push("/companies");
+      toast.dismiss(toastId);
     }, 3000);
   };
 

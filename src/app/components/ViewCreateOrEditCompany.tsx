@@ -8,22 +8,24 @@ import Paragraph1 from "./general/paragraph/Paragraph1";
 import Button2 from "./general/buttons/Button2";
 import Checkbox1 from "./general/checkboxes/Checkbox1";
 import Image1 from "./general/images/Image1";
+import Preview from "./general/misc/Preview";
 import { FaSpinner } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
-import { useApolloClient } from "@apollo/client";
-import { useUserSessionChecker } from "../hooks/useUserSessionChecker";
 import { useCreateOrEditCompany } from "../hooks/useCreateOrEditCompany";
+import { useApolloClient } from "@apollo/client";
 
-const ViewCreateOrEditCompany = () => {
-  useUserSessionChecker();
-
+const ViewCreateOrEditCompany = ({
+  client,
+}: {
+  client: ReturnType<typeof useApolloClient>;
+}) => {
   const searchParams = useSearchParams();
   const companyID = searchParams.get("companyID");
-  const client = useApolloClient();
   const {
     formData,
     handleCreate,
     handleUpdate,
+    handleDelete,
     handleFileUpload,
     validate,
     accept,
@@ -32,22 +34,25 @@ const ViewCreateOrEditCompany = () => {
     fetchingCompany,
     getFileImage,
     extractFilename,
+    viewImg,
+    setViewImg,
   } = useCreateOrEditCompany(client, companyID);
 
   if (fetchingCompany) {
     return (
       <div className="w-full h-[80vh] flex items-center justify-center">
-        <FaSpinner size={50} className="animate-spin" />
+        <FaSpinner size={50} className="animate-spin"/>
       </div>
     );
   }
 
   return (
     <div className="w-full overflow-hidden">
-      <div className="w-[90%] mt-[50px] mb-[50px] m-auto">
+      <div className="w-[95%] mt-[50px] mb-[50px] m-auto">
         <div className="max-full mt-[50px] bg-white">
           <Formik
             initialValues={formData}
+            enableReinitialize={true}
             validate={validate}
             onSubmit={formMode == "create" ? handleCreate : handleUpdate}
           >
@@ -165,12 +170,17 @@ const ViewCreateOrEditCompany = () => {
                       </Paragraph1>
                     )}
                   </div>
-                  <Image1
-                    logoS3Key={values.logoS3Key || ""}
-                    getFileImage={getFileImage}
-                    alt="company logo"
-                    className="mb-[30px]"
-                  />
+                  {viewImg && (
+                    <Preview onClose={() => setViewImg(false)}>
+                      {
+                        <Image1
+                          logoS3Key={values.logoS3Key || ""}
+                          getFileImage={getFileImage}
+                          alt="company logo"
+                        />
+                      }
+                    </Preview>
+                  )}
                   <form
                     onSubmit={handleSubmit}
                     className="flex flex-col gap-[30px]"
@@ -403,6 +413,7 @@ const ViewCreateOrEditCompany = () => {
                         accept={accept}
                         extractFilename={extractFilename}
                         required
+                        setViewImg={() => setViewImg(true)}
                       />
                     </div>
 
@@ -737,12 +748,22 @@ const ViewCreateOrEditCompany = () => {
                       </Button2>
                     )}
                     {formMode == "edit" && (
-                      <Button2
-                        type="submit"
-                        disabled={!canSubmit || isSubmitting || fileIsSaving}
-                      >
-                        {isSubmitting ? "Updating..." : "Update"}
-                      </Button2>
+                      <div className="flex flex-col gap-4 md:flex-row">
+                        <Button2
+                          type="button"
+                          onClick={handleDelete}
+                          disabled={isSubmitting || fileIsSaving}
+                          className="bg-red-500"
+                        >
+                          Delete
+                        </Button2>
+                        <Button2
+                          type="submit"
+                          disabled={!canSubmit || isSubmitting || fileIsSaving}
+                        >
+                          {isSubmitting ? "Updating..." : "Update"}
+                        </Button2>
+                      </div>
                     )}
                   </form>
                 </>

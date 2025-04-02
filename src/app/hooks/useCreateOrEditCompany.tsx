@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useApolloClient } from "@apollo/client";
+import { useRouter } from "next/navigation";
 import useCompanies from "./useCompanies";
 import { FormikHelpers } from "formik";
 import { toast } from "react-toastify";
@@ -277,9 +278,12 @@ export const useCreateOrEditCompany = (
 ) => {
   // const [createCompany] = useMutation(CREATE_COMPANY);
 
+  const router = useRouter();
+
   const [formData, setFormData] = useState<UpdateCompanyInput>(initialFormData);
   const [formMode, setFormMode] = useState<FormMode>("create");
   const [fileIsSaving, setFileIsSaving] = useState(false);
+  const [viewImg, setViewImg] = useState(false);
   const [fetchingCompany, setFetchingCompany] = useState(false);
   const [fetchFailed, setFetchFailed] = useState(false);
   const {
@@ -291,6 +295,7 @@ export const useCreateOrEditCompany = (
     getFileImage,
     extractFilename,
     editCompanyLocally,
+    deleteCompanyLocally,
   } = useCompanies({
     client,
   });
@@ -335,11 +340,13 @@ export const useCreateOrEditCompany = (
       }
     };
 
-    const id = setTimeout(setModeHandler, 1000);
+    const id = setTimeout(setModeHandler, 500);
 
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [companyId, fetchFailed]);
+  }, [companyId]);
+
+  console.log();
 
   const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -435,10 +442,19 @@ export const useCreateOrEditCompany = (
     }
   };
 
+  const handleDelete = () => {
+    if (confirm("Are you sure you want to delete this company?")) {
+      deleteCompanyLocally(companyId!);
+      toast.success("Company deleted successfully.");
+      router.push("/companies");
+    }
+  };
+
   return {
     formData,
     handleCreate,
     handleUpdate,
+    handleDelete,
     handleFileUpload,
     initialFormData,
     validate,
@@ -449,5 +465,7 @@ export const useCreateOrEditCompany = (
     fetchingCompany,
     getFileImage,
     extractFilename,
+    viewImg,
+    setViewImg,
   };
 };
