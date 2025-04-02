@@ -10,81 +10,81 @@ import isEmail from "validator/es/lib/isEmail";
 import isUrl from "validator/es/lib/isURL";
 import isMobilePhone from "validator/es/lib/isMobilePhone";
 
-// export const initialFormData: UpdateCompanyInput = {
-//   legalName: "",
-//   stateOfIncorporation: "",
-//   industry: "",
-//   totalNumberOfEmployees: undefined,
-//   numberOfFullTimeEmployees: undefined,
-//   numberOfPartTimeEmployees: undefined,
-//   website: "",
-//   linkedInCompanyPage: "",
-//   facebookCompanyPage: "",
-//   otherInformation: "",
-//   phone: "",
-//   fax: "",
-//   email: "",
-//   logoS3Key: "",
-//   isMailingAddressDifferentFromRegisteredAddress: false,
-//   registeredAddress: {
-//     country: "",
-//     state: "",
-//     city: "",
-//     street: "",
-//     zipCode: "",
-//   },
-//   mailingAddress: {
-//     country: "",
-//     state: "",
-//     city: "",
-//     street: "",
-//     zipCode: "",
-//   },
-//   primaryContactPerson: {
-//     firstName: "",
-//     lastName: "",
-//     email: "",
-//     phone: "",
-//   },
-// };
-
 export const initialFormData: UpdateCompanyInput = {
-  legalName: "Tech Corp Ltd.",
-  stateOfIncorporation: "California",
-  industry: "Software Development",
-  totalNumberOfEmployees: 0,
-  numberOfFullTimeEmployees: 0,
-  numberOfPartTimeEmployees: 0,
-  website: "https://techcorpltd.com",
-  linkedInCompanyPage: "https://linkedin.com/company/techcorpltd",
-  facebookCompanyPage: "https://facebook.com/techcorpltd",
-  otherInformation: "A leading software company focused on AI solutions.",
-  phone: "+1 (866) 217-3333",
-  fax: "+1-800-555-1234",
-  email: "contact@techcorpltd.com",
+  legalName: "",
+  stateOfIncorporation: "",
+  industry: "",
+  totalNumberOfEmployees: undefined,
+  numberOfFullTimeEmployees: undefined,
+  numberOfPartTimeEmployees: undefined,
+  website: "",
+  linkedInCompanyPage: "",
+  facebookCompanyPage: "",
+  otherInformation: "",
+  phone: "",
+  fax: "",
+  email: "",
+  logoS3Key: "",
+  isMailingAddressDifferentFromRegisteredAddress: false,
   registeredAddress: {
-    country: "USA",
-    state: "California",
-    city: "San Francisco",
-    street: "123 Market Street",
-    zipCode: "94103",
+    country: "",
+    state: "",
+    city: "",
+    street: "",
+    zipCode: "",
   },
   mailingAddress: {
-    country: "USA",
-    state: "California",
-    city: "San Francisco",
-    street: "456 Mission Street",
-    zipCode: "94104",
+    country: "",
+    state: "",
+    city: "",
+    street: "",
+    zipCode: "",
   },
-  isMailingAddressDifferentFromRegisteredAddress: true,
   primaryContactPerson: {
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@techcorpltd.com",
-    phone: "+1-800-555-7890",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
   },
-  logoS3Key: "chrome_ROT0zdCbxY-E9-DRrb2Vpyus0S-l6aRS-2025-03-31T11:10:18",
 };
+
+// export const initialFormData: UpdateCompanyInput = {
+//   legalName: "Tech Corp Ltd.",
+//   stateOfIncorporation: "California",
+//   industry: "Software Development",
+//   totalNumberOfEmployees: 0,
+//   numberOfFullTimeEmployees: 0,
+//   numberOfPartTimeEmployees: 0,
+//   website: "https://techcorpltd.com",
+//   linkedInCompanyPage: "https://linkedin.com/company/techcorpltd",
+//   facebookCompanyPage: "https://facebook.com/techcorpltd",
+//   otherInformation: "A leading software company focused on AI solutions.",
+//   phone: "+1 (866) 217-3333",
+//   fax: "+1-800-555-1234",
+//   email: "contact@techcorpltd.com",
+//   registeredAddress: {
+//     country: "USA",
+//     state: "California",
+//     city: "San Francisco",
+//     street: "123 Market Street",
+//     zipCode: "94103",
+//   },
+//   mailingAddress: {
+//     country: "USA",
+//     state: "California",
+//     city: "San Francisco",
+//     street: "456 Mission Street",
+//     zipCode: "94104",
+//   },
+//   isMailingAddressDifferentFromRegisteredAddress: true,
+//   primaryContactPerson: {
+//     firstName: "John",
+//     lastName: "Doe",
+//     email: "john.doe@techcorpltd.com",
+//     phone: "+1-800-555-7890",
+//   },
+//   logoS3Key: "chrome_ROT0zdCbxY-E9-DRrb2Vpyus0S-l6aRS-2025-03-31T11:10:18",
+// };
 
 export const validate = (values: UpdateCompanyInput) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -128,7 +128,8 @@ export const validate = (values: UpdateCompanyInput) => {
     errors.email = "Invalid email format";
   }
 
-  if (!values.phone || !isMobilePhone(values.phone || "")) {
+  const cleanPhone = (phone: string) => phone.replace(/[^\d+]/g, ""); // Keep numbers and '+'
+  if (!values.phone || !isMobilePhone(cleanPhone(values.phone), "any")) {
     errors.phone = "Invalid phone number";
   }
 

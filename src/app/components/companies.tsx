@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useUserSessionChecker } from "../hooks/useUserSessionChecker";
-// import { Company } from "../types";
+import { Company } from "../types";
 import NavBar from "./Navbar";
 
 const CompanyCard = ({ company }: { company: Company }) => {
