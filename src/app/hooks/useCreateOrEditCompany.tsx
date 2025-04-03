@@ -325,6 +325,7 @@ export const useCreateOrEditCompany = (
           ...prev,
           ...(companyToEdit as Partial<UpdateCompanyInput>),
         }));
+        saveCompanyLocally(companyToEdit);
         setFormMode("edit");
       } catch (err) {
         let errorMessage = "Failed to fetch company details.";
@@ -446,7 +447,7 @@ export const useCreateOrEditCompany = (
     if (confirm("Are you sure you want to delete this company?")) {
       deleteCompanyLocally(companyId!);
       toast.success("Company deleted successfully.");
-      router.push("/companies");
+      router.push("/companies")
     }
   };
 

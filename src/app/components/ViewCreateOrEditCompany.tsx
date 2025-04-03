@@ -38,10 +38,10 @@ const ViewCreateOrEditCompany = ({
     setViewImg,
   } = useCreateOrEditCompany(client, companyID);
 
-  if (fetchingCompany) {
+  if (fetchingCompany && formMode == "edit") {
     return (
       <div className="w-full h-[80vh] flex items-center justify-center">
-        <FaSpinner size={50} className="animate-spin"/>
+        <FaSpinner size={50} className="animate-spin" />
       </div>
     );
   }
