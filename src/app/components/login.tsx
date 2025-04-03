@@ -1,6 +1,7 @@
 import Image from "next/image";
 // import LoginImg from "@/public/login-bg.webp";
-import LoginForm from "./LoginForm";
+// import LoginForm from "./LoginForm";
+import LoginForm from "@app/components/LoginForm";
 
 const Login = () => {
   return (
