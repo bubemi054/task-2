@@ -41,14 +41,17 @@ export default function useCompanies({ client }: useCompaniesProps) {
   useEffect(() => {
     const filterCompanies = () => {
       const filtered = companies.filter((company) => {
+        const id = company?.id || "";
         const legalName = company?.legalName || "";
         const industry = company?.industry || "";
         const email = company?.email || "";
-        const target = `${legalName} ${industry} ${email}`.toLowerCase();
+        const target = `${id} ${legalName} ${industry} ${email}`.toLowerCase();
         return target.includes(search.toLowerCase());
       });
 
-      setFilteredCompanies(filtered);
+      const reversed = filtered?.reverse();
+
+      setFilteredCompanies(reversed);
     };
 
     const id = setTimeout(() => {
@@ -61,7 +64,12 @@ export default function useCompanies({ client }: useCompaniesProps) {
   }, [companies, search]);
 
   const saveCompanyLocally = (company: Company) => {
-    const updatedCompanies = [...companies, company];
+    const storedCompanies = localStorage.getItem(STORAGE_KEY);
+    const companies: Company[] = storedCompanies
+      ? JSON.parse(storedCompanies)
+      : [];
+    const filteredCompanies = companies.filter((c) => c.id !== company.id);
+    const updatedCompanies = [...filteredCompanies, company];
     setCompanies(updatedCompanies);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedCompanies));
   };

@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Company Details Upload App FE-2024-12-i (Task 2)
+
+A weather application built with Typescript, React/Next, Apollo, Formik and Tailwind CSS.
+
+## Table of Contents
+
+* [Features](#features)
+* [Technologies Used](#technologies-used)
+* [Getting Started](#getting-started)
+* [Testing](#testing)
+* [Usage](#usage)
+
+## Features
+* User authentication and session management
+* Company data upload and management
+* Company data edition
+* Company data deletion
+* Search and filtering functionality 
+
+## Technologies Used
+* [React](https://react.dev/)
+* [Next.js](https://nextjs.org/)
+* [Tailwind CSS](https://tailwindcss.com/)
+* [TypeScript](https://www.typescriptlang.org/)
+* [Formik](https://formik.org/)
+* [Apollo](https://www.apollographql.com/)
 
 ## Getting Started
+2. Install dependencies: `npm install` or `yarn install`
+3. Start the development server: `npm run dev` or `yarn dev`
 
-First, run the development server:
+## Testing
+1. Run tests: `npm run test` or `yarn test`
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Usage
+1. Open the application in your web browser: `http://localhost:3000/`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Screenshots
+[![Screenshot 1](https://i.postimg.cc/ThKzVnW0/Screenshot-48.png)](https://postimg.cc/ThKzVnW0)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+[![Screenshot 2](https://i.postimg.cc/LYw0C0ZT/Screenshot-49.png)](https://postimg.cc/LYw0C0ZT)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+[![Screenshot 3](https://i.postimg.cc/bd4K3dxh/Screenshot-50.png)](https://postimg.cc/bd4K3dxh)
 
-## Learn More
+[![Screenshot 4](https://i.postimg.cc/9rTsSVbq/Screenshot-51.png)](https://postimg.cc/9rTsSVbq)
 
-To learn more about Next.js, take a look at the following resources:
+[![Screenshot 5](https://i.postimg.cc/0zsh13XX/Screenshot-52.png)](https://postimg.cc/0zsh13XX)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+[![Screenshot 6](https://i.postimg.cc/hX16DrHD/Screenshot-53.png)](https://postimg.cc/hX16DrHD)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+[![Screenshot 7](https://i.postimg.cc/zLDMVhrn/Screenshot-54.png)](https://postimg.cc/zLDMVhrn)
 
-## Deploy on Vercel
+[![Screenshot 8](https://i.postimg.cc/SXZP8KSH/Screenshot-55.png)](https://postimg.cc/SXZP8KSH)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+[![Screenshot 9](https://i.postimg.cc/y3RpwXmz/Screenshot-56.png)](https://postimg.cc/y3RpwXmz)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[![Screenshot 10](https://i.postimg.cc/vgcNvdDT/Screenshot-57.png)](https://postimg.cc/vgcNvdDT)

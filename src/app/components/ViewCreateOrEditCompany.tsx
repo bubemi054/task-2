@@ -38,7 +38,7 @@ const ViewCreateOrEditCompany = ({
     setViewImg,
   } = useCreateOrEditCompany(client, companyID);
 
-  if (fetchingCompany && formMode == "edit") {
+  if (fetchingCompany) {
     return (
       <div className="w-full h-[80vh] flex items-center justify-center">
         <FaSpinner size={50} className="animate-spin" />
@@ -155,7 +155,10 @@ const ViewCreateOrEditCompany = ({
 
               const canSubmit = isValid && dirty;
 
-              // console.log(errors);
+              // console.log({errors});
+              // console.log({values});
+              console.log({isValid});
+              // console.log("isMailingAddressDifferentFromRegisteredAddress", values.isMailingAddressDifferentFromRegisteredAddress);
 
               return (
                 <>

@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { UpdateCompanyInput } from "../lib/graphql-types";
 import isEmail from "validator/es/lib/isEmail";
 import isUrl from "validator/es/lib/isURL";
-import isMobilePhone from "validator/es/lib/isMobilePhone";
+import { isValidPhoneNumber } from "libphonenumber-js";
 
 export const initialFormData: UpdateCompanyInput = {
   legalName: "",
@@ -129,8 +129,7 @@ export const validate = (values: UpdateCompanyInput) => {
     errors.email = "Invalid email format";
   }
 
-  const cleanPhone = (phone: string) => phone.replace(/[^\d+]/g, ""); // Keep numbers and '+'
-  if (!values.phone || !isMobilePhone(cleanPhone(values.phone), "any")) {
+  if (!values.phone || !isValidPhoneNumber(values.phone)) {
     errors.phone = "Invalid phone number";
   }
 
@@ -199,36 +198,38 @@ export const validate = (values: UpdateCompanyInput) => {
     };
   }
 
-  // Validate mailing address if different from registered
-  if (!values.mailingAddress?.country) {
-    errors.mailingAddress = {
-      ...errors.mailingAddress,
-      country: "Country is required",
-    };
-  }
-  if (!values.mailingAddress?.state) {
-    errors.mailingAddress = {
-      ...errors.mailingAddress,
-      state: "State is required",
-    };
-  }
-  if (!values.mailingAddress?.city) {
-    errors.mailingAddress = {
-      ...errors.mailingAddress,
-      city: "City is required",
-    };
-  }
-  if (!values.mailingAddress?.street) {
-    errors.mailingAddress = {
-      ...errors.mailingAddress,
-      street: "Street is required",
-    };
-  }
-  if (!values.mailingAddress?.zipCode) {
-    errors.mailingAddress = {
-      ...errors.mailingAddress,
-      zipCode: "Zip code is required",
-    };
+  if (!values.isMailingAddressDifferentFromRegisteredAddress) {
+    // Validate mailing address if different from registered
+    if (!values.mailingAddress?.country) {
+      errors.mailingAddress = {
+        ...errors.mailingAddress,
+        country: "Country is required",
+      };
+    }
+    if (!values.mailingAddress?.state) {
+      errors.mailingAddress = {
+        ...errors.mailingAddress,
+        state: "State is required",
+      };
+    }
+    if (!values.mailingAddress?.city) {
+      errors.mailingAddress = {
+        ...errors.mailingAddress,
+        city: "City is required",
+      };
+    }
+    if (!values.mailingAddress?.street) {
+      errors.mailingAddress = {
+        ...errors.mailingAddress,
+        street: "Street is required",
+      };
+    }
+    if (!values.mailingAddress?.zipCode) {
+      errors.mailingAddress = {
+        ...errors.mailingAddress,
+        zipCode: "Zip code is required",
+      };
+    }
   }
 
   // Validate primary contact person
@@ -260,7 +261,7 @@ export const validate = (values: UpdateCompanyInput) => {
       ...errors.primaryContactPerson,
       phone: "Phone number is required",
     };
-  } else if (!isMobilePhone(values.primaryContactPerson.phone || "")) {
+  } else if (!isValidPhoneNumber(values.phone)) {
     errors.primaryContactPerson = {
       ...errors.primaryContactPerson,
       phone: "Invalid phone number",
@@ -307,11 +308,10 @@ export const useCreateOrEditCompany = (
       setFormMode("create");
       return;
     }
+    setFetchingCompany(true);
 
     const setModeHandler = async () => {
       try {
-        setFetchingCompany(true);
-
         const companyToEdit = await fetchCompany(companyId!);
 
         if (!companyToEdit) {
@@ -337,17 +337,16 @@ export const useCreateOrEditCompany = (
         setFetchFailed(true);
         setFormMode("create");
       } finally {
-        setFetchingCompany(false);
+        setFetchingCompany(false); // ✅ This ensures it turns false after fetching (even if there's an error)
       }
     };
 
     const id = setTimeout(setModeHandler, 500);
 
     return () => clearTimeout(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [companyId]);
+  }, [companyId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  console.log();
+  console.log({ fetchingCompany });
 
   const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -447,7 +446,7 @@ export const useCreateOrEditCompany = (
     if (confirm("Are you sure you want to delete this company?")) {
       deleteCompanyLocally(companyId!);
       toast.success("Company deleted successfully.");
-      router.push("/companies")
+      router.push("/companies");
     }
   };
 

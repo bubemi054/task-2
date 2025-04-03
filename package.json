@@ -19,6 +19,7 @@
     "country-state-city": "^3.2.1",
     "formik": "^2.4.6",
     "fuse.js": "^7.1.0",
+    "libphonenumber-js": "^1.12.6",
     "next": "15.2.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
