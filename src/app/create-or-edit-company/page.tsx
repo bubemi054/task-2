@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import useUserSessionChecker from "../hooks/useUserSessionChecker";
 import ViewCreateOrEditCompany from "../components/ViewCreateOrEditCompany";
 import { ApolloProvider } from "@apollo/client";
-import Navbar from "../components/Navbar";
+import NavBar from "../components/Navbar";
 import { client } from "../lib/apollo-client";
 import useCompanies from "../hooks/useCompanies";
 
@@ -16,7 +16,7 @@ const CompanyPage = () => {
 
   return (
     <ApolloProvider client={client}>
-      <Navbar
+      <NavBar
         clearSession={clearSession}
         search={search}
         setSearch={setSearch}
