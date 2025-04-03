@@ -1,7 +1,7 @@
 "use client";
 
 import useUserSessionChecker from "../hooks/useUserSessionChecker";
-import Navbar from "@app/components/Navbar"
+import NavBar from "@app/components/NavBar"
 import CompanyCard from "./CompanyCard";
 import { client } from "../lib/apollo-client";
 import useCompanies from "../hooks/useCompanies";
@@ -15,7 +15,7 @@ const Companies = () => {
 
   return (
     <>
-      <Navbar
+      <NavBar
         clearSession={clearSession}
         search={search}
         setSearch={setSearch}
