@@ -1,7 +1,7 @@
 import { IoHomeOutline } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import Search from "./Search";
+import Search from "./search";
 import Link from "next/link";
 
 interface NavbarProps {

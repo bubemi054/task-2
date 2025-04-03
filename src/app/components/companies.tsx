@@ -1,7 +1,7 @@
 "use client";
 
 import useUserSessionChecker from "../hooks/useUserSessionChecker";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/navbar";
 import CompanyCard from "./CompanyCard";
 import { client } from "../lib/apollo-client";
 import useCompanies from "../hooks/useCompanies";

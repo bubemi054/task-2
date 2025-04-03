@@ -4,9 +4,9 @@ import { Suspense } from "react";
 import useUserSessionChecker from "../hooks/useUserSessionChecker";
 import ViewCreateOrEditCompany from "../components/ViewCreateOrEditCompany";
 import { ApolloProvider } from "@apollo/client";
-import NavBar from "@app/components/NavBar";
 import { client } from "../lib/apollo-client";
 import useCompanies from "../hooks/useCompanies";
+import NavBar from "../components/navbar";
 
 const CompanyPage = () => {
   const { clearSession } = useUserSessionChecker();
