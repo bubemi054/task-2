@@ -10,7 +10,7 @@ interface NavbarProps {
   setSearch: (search: string) => void;
 }
 
-const Navbar = ({ clearSession, search, setSearch }: NavbarProps) => {
+const NavBar = ({ clearSession, search, setSearch }: NavbarProps) => {
   return (
     <nav data-testid="navbar" role="navigation" className="w-full h-[80px] shadow-xs flex justify-between items-center p-4 md:px-10">
       {/* Home Icon */}
@@ -58,4 +58,4 @@ const Navbar = ({ clearSession, search, setSearch }: NavbarProps) => {
   );
 };
 
-export default Navbar;
+export default NavBar;
