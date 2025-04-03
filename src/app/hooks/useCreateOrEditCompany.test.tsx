@@ -1,19 +1,19 @@
-import { render, screen, fireEvent, cleanup, renderHook } from "@testing-library/react";
-import { useCreateOrEditCompany } from "./useCreateOrEditCompany";
-import { vi, describe, it, expect, afterEach, beforeEach } from "vitest";
-import { initialFormData, validate } from "./useCreateOrEditCompany";
-import { UpdateCompanyInput } from "../lib/graphql-types";
-import { useApolloClient } from "@apollo/client";
-import "@testing-library/jest-dom/vitest";
+// import { render, screen, fireEvent, cleanup, renderHook } from "@testing-library/react";
+// import { useCreateOrEditCompany } from "./useCreateOrEditCompany";
+// import { vi, describe, it, expect, afterEach, beforeEach } from "vitest";
+// import { initialFormData, validate } from "./useCreateOrEditCompany";
+// import { UpdateCompanyInput } from "../lib/graphql-types";
+// import { useApolloClient } from "@apollo/client";
+// import "@testing-library/jest-dom/vitest";
 
-afterEach(() => {
-  cleanup();
-  vi.clearAllMocks();
-});
+// afterEach(() => {
+//   cleanup();
+//   vi.clearAllMocks();
+// });
 
-vi.mock("@apollo/client", () => ({
-  useApolloClient: vi.fn(),
-}));
+// vi.mock("@apollo/client", () => ({
+//   useApolloClient: vi.fn(),
+// }));
 
 // vi.mock("./useCompanies", () => ({
 //   default: vi.fn(() => ({
@@ -165,121 +165,121 @@ vi.mock("@apollo/client", () => ({
 //   });
 // });
 
-describe("useCreateOrEditCompany", () => {
-  let mockClient: ReturnType<typeof useApolloClient>;
-  let mockUseCompanies: any;
+// describe("useCreateOrEditCompany", () => {
+//   let mockClient: ReturnType<typeof useApolloClient>;
+//   let mockUseCompanies: any;
 
-  beforeEach(() => {
-    mockClient = { query: vi.fn(), mutate: vi.fn() } as any;
-    (useApolloClient as vi.Mock).mockReturnValue(mockClient);
+//   beforeEach(() => {
+//     mockClient = { query: vi.fn(), mutate: vi.fn() } as any;
+//     (useApolloClient as vi.Mock).mockReturnValue(mockClient);
 
-    mockUseCompanies = {
-      createCompany: vi.fn(),
-      updateCompany: vi.fn(),
-      saveCompanyLocally: vi.fn(),
-      fetchCompany: vi.fn(),
-      saveFileImage: vi.fn().mockResolvedValue({ key: "mock-key" }),
-      getFileImage: vi.fn(),
-      extractFilename: vi.fn(),
-      editCompanyLocally: vi.fn(),
-    };
+//     mockUseCompanies = {
+//       createCompany: vi.fn(),
+//       updateCompany: vi.fn(),
+//       saveCompanyLocally: vi.fn(),
+//       fetchCompany: vi.fn(),
+//       saveFileImage: vi.fn().mockResolvedValue({ key: "mock-key" }),
+//       getFileImage: vi.fn(),
+//       extractFilename: vi.fn(),
+//       editCompanyLocally: vi.fn(),
+//     };
 
-    require("./useCompanies").default.mockReturnValue(mockUseCompanies);
-  });
+//     require("./useCompanies").default.mockReturnValue(mockUseCompanies);
+//   });
 
-  // it("should initialize with correct default values", () => {
-  //   const { result } = renderHook(() => useCreateOrEditCompany(mockClient));
+//   // it("should initialize with correct default values", () => {
+//   //   const { result } = renderHook(() => useCreateOrEditCompany(mockClient));
 
-  //   expect(result.current.formData).toEqual(
-  //     expect.objectContaining({ legalName: "" })
-  //   );
-  //   expect(result.current.formMode).toBe("create");
-  //   expect(result.current.fileIsSaving).toBe(false);
-  //   expect(result.current.fetchingCompany).toBe(false);
-  // });
+//   //   expect(result.current.formData).toEqual(
+//   //     expect.objectContaining({ legalName: "" })
+//   //   );
+//   //   expect(result.current.formMode).toBe("create");
+//   //   expect(result.current.fileIsSaving).toBe(false);
+//   //   expect(result.current.fetchingCompany).toBe(false);
+//   // });
 
-  // it("should change mode to 'edit' when a valid companyId is provided", async () => {
-  //   mockUseCompanies.fetchCompany.mockResolvedValue({
-  //     legalName: "Test Company",
-  //   });
+//   // it("should change mode to 'edit' when a valid companyId is provided", async () => {
+//   //   mockUseCompanies.fetchCompany.mockResolvedValue({
+//   //     legalName: "Test Company",
+//   //   });
 
-  //   const { result, rerender } = renderHook(
-  //     ({ companyId }) => useCreateOrEditCompany(mockClient, companyId),
-  //     { initialProps: { companyId: "123" } }
-  //   );
+//   //   const { result, rerender } = renderHook(
+//   //     ({ companyId }) => useCreateOrEditCompany(mockClient, companyId),
+//   //     { initialProps: { companyId: "123" } }
+//   //   );
 
-  //   expect(result.current.fetchingCompany).toBe(true);
+//   //   expect(result.current.fetchingCompany).toBe(true);
 
-  //   await act(async () => {
-  //     rerender({ companyId: "123" });
-  //   });
+//   //   await act(async () => {
+//   //     rerender({ companyId: "123" });
+//   //   });
 
-  //   expect(result.current.fetchingCompany).toBe(false);
-  //   expect(result.current.formMode).toBe("edit");
-  //   expect(result.current.formData.legalName).toBe("Test Company");
-  // });
+//   //   expect(result.current.fetchingCompany).toBe(false);
+//   //   expect(result.current.formMode).toBe("edit");
+//   //   expect(result.current.formData.legalName).toBe("Test Company");
+//   // });
 
-  // it("should handle file upload correctly", async () => {
-  //   const { result } = renderHook(() => useCreateOrEditCompany(mockClient));
-  //   const setFieldValue = vi.fn();
+//   // it("should handle file upload correctly", async () => {
+//   //   const { result } = renderHook(() => useCreateOrEditCompany(mockClient));
+//   //   const setFieldValue = vi.fn();
 
-  //   const file = new File(["mock"], "logo.png", { type: "image/png" });
+//   //   const file = new File(["mock"], "logo.png", { type: "image/png" });
 
-  //   await act(async () => {
-  //     await result.current.handleFileUpload(
-  //       { target: { files: [file] } } as any,
-  //       setFieldValue
-  //     );
-  //   });
+//   //   await act(async () => {
+//   //     await result.current.handleFileUpload(
+//   //       { target: { files: [file] } } as any,
+//   //       setFieldValue
+//   //     );
+//   //   });
 
-  //   expect(setFieldValue).toHaveBeenCalledWith("logoS3Key", "mock-key");
-  //   expect(mockUseCompanies.saveFileImage).toHaveBeenCalledWith(file);
-  // });
+//   //   expect(setFieldValue).toHaveBeenCalledWith("logoS3Key", "mock-key");
+//   //   expect(mockUseCompanies.saveFileImage).toHaveBeenCalledWith(file);
+//   // });
 
-  // it("should handle company creation correctly", async () => {
-  //   mockUseCompanies.createCompany.mockResolvedValue({ id: "123" });
+//   // it("should handle company creation correctly", async () => {
+//   //   mockUseCompanies.createCompany.mockResolvedValue({ id: "123" });
 
-  //   const { result } = renderHook(() => useCreateOrEditCompany(mockClient));
-  //   const resetForm = vi.fn();
-  //   const setSubmitting = vi.fn();
+//   //   const { result } = renderHook(() => useCreateOrEditCompany(mockClient));
+//   //   const resetForm = vi.fn();
+//   //   const setSubmitting = vi.fn();
 
-  //   await act(async () => {
-  //     await result.current.handleCreate(
-  //       { legalName: "New Company" } as UpdateCompanyInput,
-  //       { setSubmitting, resetForm } as any
-  //     );
-  //   });
+//   //   await act(async () => {
+//   //     await result.current.handleCreate(
+//   //       { legalName: "New Company" } as UpdateCompanyInput,
+//   //       { setSubmitting, resetForm } as any
+//   //     );
+//   //   });
 
-  //   expect(mockUseCompanies.createCompany).toHaveBeenCalled();
-  //   expect(mockUseCompanies.saveCompanyLocally).toHaveBeenCalled();
-  //   expect(resetForm).toHaveBeenCalled();
-  //   expect(setSubmitting).toHaveBeenCalledWith(false);
-  // });
+//   //   expect(mockUseCompanies.createCompany).toHaveBeenCalled();
+//   //   expect(mockUseCompanies.saveCompanyLocally).toHaveBeenCalled();
+//   //   expect(resetForm).toHaveBeenCalled();
+//   //   expect(setSubmitting).toHaveBeenCalledWith(false);
+//   // });
 
-  // it("should handle company update correctly", async () => {
-  //   mockUseCompanies.updateCompany.mockResolvedValue({
-  //     id: "123",
-  //     legalName: "Updated Company",
-  //   });
+//   // it("should handle company update correctly", async () => {
+//   //   mockUseCompanies.updateCompany.mockResolvedValue({
+//   //     id: "123",
+//   //     legalName: "Updated Company",
+//   //   });
 
-  //   const { result } = renderHook(() =>
-  //     useCreateOrEditCompany(mockClient, "123")
-  //   );
-  //   const setValues = vi.fn();
-  //   const setSubmitting = vi.fn();
+//   //   const { result } = renderHook(() =>
+//   //     useCreateOrEditCompany(mockClient, "123")
+//   //   );
+//   //   const setValues = vi.fn();
+//   //   const setSubmitting = vi.fn();
 
-  //   await act(async () => {
-  //     await result.current.handleUpdate(
-  //       { legalName: "Updated Company" } as UpdateCompanyInput,
-  //       { setSubmitting, setValues } as any
-  //     );
-  //   });
+//   //   await act(async () => {
+//   //     await result.current.handleUpdate(
+//   //       { legalName: "Updated Company" } as UpdateCompanyInput,
+//   //       { setSubmitting, setValues } as any
+//   //     );
+//   //   });
 
-  //   expect(mockUseCompanies.updateCompany).toHaveBeenCalled();
-  //   expect(mockUseCompanies.editCompanyLocally).toHaveBeenCalled();
-  //   expect(setValues).toHaveBeenCalledWith(
-  //     expect.objectContaining({ legalName: "Updated Company" })
-  //   );
-  //   expect(setSubmitting).toHaveBeenCalledWith(false);
-  // });
-});
+//   //   expect(mockUseCompanies.updateCompany).toHaveBeenCalled();
+//   //   expect(mockUseCompanies.editCompanyLocally).toHaveBeenCalled();
+//   //   expect(setValues).toHaveBeenCalledWith(
+//   //     expect.objectContaining({ legalName: "Updated Company" })
+//   //   );
+//   //   expect(setSubmitting).toHaveBeenCalledWith(false);
+//   // });
+// });

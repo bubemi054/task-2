@@ -1,5 +1,5 @@
 import Image from "next/image";
-import LoginImg from "@/public/login-bg.webp";
+// import LoginImg from "@/public/login-bg.webp";
 import LoginForm from "./LoginForm";
 
 const Login = () => {
@@ -7,7 +7,7 @@ const Login = () => {
     <div className="w-full min-h-screen overflow-hidden relative flex items-center justify-center">
       <Image
         className="w-full h-full absolute object-cover top-0 left-0 z-0"
-        src={LoginImg}
+        src={""}
         alt="Login BG"
         layout="fill"
         priority

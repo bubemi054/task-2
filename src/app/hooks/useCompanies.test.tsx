@@ -89,6 +89,7 @@ const mockCompanies: Company[] = [
 ];
 
 describe("useCompanies Hook", () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockClient: any;
 
   beforeEach(() => {
@@ -194,23 +195,32 @@ describe("useCompanies Hook", () => {
 
   it("updates a company via API", async () => {
     const updatedCompany = { ...mockCompanies[0], legalName: "Updated Co" };
-    mockClient.mutate.mockResolvedValue({ data: { updateCompany: { company: updatedCompany } } });
+    mockClient.mutate.mockResolvedValue({
+      data: { updateCompany: { company: updatedCompany } },
+    });
     const { result } = renderHook(() => useCompanies({ client: mockClient }));
 
-    const response = await result.current.updateCompany("1", {...companyInp, legalName: "Updated Co" });
+    const response = await result.current.updateCompany("1", {
+      ...companyInp,
+      legalName: "Updated Co",
+    });
     expect(response).toEqual(updatedCompany);
   });
 
   it("extracts filename from key", () => {
     const { result } = renderHook(() => useCompanies({ client: mockClient }));
-    expect(result.current.extractFilename("testfile-123"))
-      .toEqual("testfile");
+    expect(result.current.extractFilename("testfile-123")).toEqual("testfile");
   });
 
   it("saves file image via API", async () => {
     const mockFile = new File(["content"], "image.png", { type: "image/png" });
-    const mockResponse = { url: "https://example.com/upload", key: "image-123" };
-    mockClient.query.mockResolvedValue({ data: { getSignedUploadUrl: mockResponse } });
+    const mockResponse = {
+      url: "https://example.com/upload",
+      key: "image-123",
+    };
+    mockClient.query.mockResolvedValue({
+      data: { getSignedUploadUrl: mockResponse },
+    });
 
     global.fetch = vi.fn(() =>
       Promise.resolve({
@@ -218,15 +228,20 @@ describe("useCompanies Hook", () => {
         json: () => Promise.resolve({}),
       } as Response)
     );
-    
+
     const { result } = renderHook(() => useCompanies({ client: mockClient }));
     const response = await result.current.saveFileImage(mockFile);
     expect(response).toEqual(mockResponse);
   });
 
   it("gets file image via API", async () => {
-    const mockResponse = { url: "https://example.com/download", filename: "image" };
-    mockClient.query.mockResolvedValue({ data: { getSignedDownloadUrl: { url: mockResponse.url } } });
+    const mockResponse = {
+      url: "https://example.com/download",
+      filename: "image",
+    };
+    mockClient.query.mockResolvedValue({
+      data: { getSignedDownloadUrl: { url: mockResponse.url } },
+    });
 
     const { result } = renderHook(() => useCompanies({ client: mockClient }));
     const response = await result.current.getFileImage("image-123");

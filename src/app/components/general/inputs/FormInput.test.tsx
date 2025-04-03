@@ -77,7 +77,7 @@ describe("FormInput Component", () => {
   });
 
   it("renders file input and shows selected filename", () => {
-    const extractFilename = (path: string) => path.split("\\").pop();
+    const extractFilename = (path: string) => (path.split("\\").pop()!);
     render(
       <FormInput
         label="Upload"
@@ -85,7 +85,7 @@ describe("FormInput Component", () => {
         name="file"
         value="C:\\fakepath\\example.png"
         onChange={() => {}}
-        // @ts-ignore
+        // @ts-error ignore.
         extractFilename={extractFilename}
         required
       />

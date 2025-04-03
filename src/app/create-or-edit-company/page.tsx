@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import useUserSessionChecker from "../hooks/useUserSessionChecker";
 import ViewCreateOrEditCompany from "../components/ViewCreateOrEditCompany";
 import { ApolloProvider } from "@apollo/client";
@@ -20,7 +21,9 @@ const CompanyPage = () => {
         search={search}
         setSearch={setSearch}
       />
-      <ViewCreateOrEditCompany client={client} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <ViewCreateOrEditCompany client={client} />
+      </Suspense>
     </ApolloProvider>
   );
 };
