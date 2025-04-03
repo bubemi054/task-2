@@ -20,7 +20,7 @@ const ViewCreateOrEditCompany = ({
   client: ReturnType<typeof useApolloClient>;
 }) => {
   const searchParams = useSearchParams();
-  const companyID = searchParams.get("companyID");
+  const companyID = searchParams.get("companyID"); 
   const {
     formData,
     handleCreate,
