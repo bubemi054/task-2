@@ -20,7 +20,7 @@ const ViewCreateOrEditCompany = ({
   client: ReturnType<typeof useApolloClient>;
 }) => {
   const searchParams = useSearchParams();
-  const companyID = searchParams.get("companyID");
+  const companyID = searchParams.get("companyID"); 
   const {
     formData,
     handleCreate,
@@ -431,11 +431,8 @@ const ViewCreateOrEditCompany = ({
                           handleBlur={handleBlur}
                           placeholder="e.g John"
                           errorMessage={
-                            // @ts-expect-error come back
                             errors.primaryContactPerson?.firstName &&
-                            // @ts-expect-error come back
                             touched.primaryContactPerson?.firstName &&
-                            // @ts-expect-error come back
                             errors.primaryContactPerson?.firstName
                           }
                           required
@@ -450,11 +447,8 @@ const ViewCreateOrEditCompany = ({
                           handleBlur={handleBlur}
                           placeholder="e.g Doe"
                           errorMessage={
-                            // @ts-expect-error come back
                             errors.primaryContactPerson?.lastName &&
-                            // @ts-expect-error come back
                             touched.primaryContactPerson?.lastName &&
-                            // @ts-expect-error come back
                             errors.primaryContactPerson?.lastName
                           }
                           required
@@ -470,11 +464,8 @@ const ViewCreateOrEditCompany = ({
                           handleBlur={handleBlur}
                           placeholder="e.g 6aVcM@example.com"
                           errorMessage={
-                            // @ts-expect-error come back
                             errors.primaryContactPerson?.email &&
-                            // @ts-expect-error come back
                             touched.primaryContactPerson?.email &&
-                            // @ts-expect-error come back
                             errors.primaryContactPerson?.email
                           }
                           required
@@ -489,11 +480,8 @@ const ViewCreateOrEditCompany = ({
                           handleBlur={handleBlur}
                           placeholder="e.g +1 (123) 456-7890"
                           errorMessage={
-                            // @ts-expect-error come back
                             errors.primaryContactPerson?.phone &&
-                            // @ts-expect-error come back
                             touched.primaryContactPerson?.phone &&
-                            // @ts-expect-error come back
                             errors.primaryContactPerson?.phone
                           }
                           required
@@ -512,11 +500,8 @@ const ViewCreateOrEditCompany = ({
                           type="text"
                           placeholder="e.g United States"
                           errorMessage={
-                            // @ts-expect-error come back
                             errors?.registeredAddress?.country &&
-                            // @ts-expect-error come back
                             touched?.registeredAddress?.country &&
-                            // @ts-expect-error come back
                             errors?.registeredAddress?.country
                           }
                           handleBlur={handleBlur}
@@ -532,11 +517,8 @@ const ViewCreateOrEditCompany = ({
                           handleBlur={handleBlur}
                           errorMessage={
                             values.isMailingAddressDifferentFromRegisteredAddress &&
-                            // @ts-expect-error come back
                             errors?.registeredAddress?.state &&
-                            // @ts-expect-error come back
                             touched?.registeredAddress?.state &&
-                            // @ts-expect-error come back
                             errors?.registeredAddress?.state
                           }
                           value={values?.registeredAddress?.state || ""}
@@ -550,11 +532,8 @@ const ViewCreateOrEditCompany = ({
                           placeholder="e.g New York"
                           handleBlur={handleBlur}
                           errorMessage={
-                            // @ts-expect-error come back
                             errors?.registeredAddress?.city &&
-                            // @ts-expect-error come back
                             touched?.registeredAddress?.city &&
-                            // @ts-expect-error come back
                             errors?.registeredAddress?.city
                           }
                           value={values?.registeredAddress?.city || ""}
@@ -571,11 +550,8 @@ const ViewCreateOrEditCompany = ({
                           placeholder="e.g 123 Main St"
                           handleBlur={handleBlur}
                           errorMessage={
-                            // @ts-expect-error come back
                             errors?.registeredAddress?.street &&
-                            // @ts-expect-error come back
                             touched?.registeredAddress?.street &&
-                            // @ts-expect-error come back
                             errors?.registeredAddress?.street
                           }
                           value={values?.registeredAddress?.street || ""}
@@ -590,11 +566,8 @@ const ViewCreateOrEditCompany = ({
                           placeholder="e.g 12345"
                           handleBlur={handleBlur}
                           errorMessage={
-                            // @ts-expect-error come back
                             errors?.registeredAddress?.zipCode &&
-                            // @ts-expect-error come back
                             touched?.registeredAddress?.zipCode &&
-                            // @ts-expect-error come back
                             errors?.registeredAddress?.zipCode
                           }
                           value={values?.registeredAddress?.zipCode || ""}
@@ -630,11 +603,8 @@ const ViewCreateOrEditCompany = ({
                           value={values?.mailingAddress?.country || ""}
                           errorMessage={
                             values.isMailingAddressDifferentFromRegisteredAddress &&
-                            // @ts-expect-error come back
                             errors?.mailingAddress?.country &&
-                            // @ts-expect-error come back
                             touched?.mailingAddress?.country &&
-                            // @ts-expect-error come back
                             errors?.mailingAddress?.country
                           }
                           disabled={
@@ -653,11 +623,8 @@ const ViewCreateOrEditCompany = ({
                           value={values?.mailingAddress?.state || ""}
                           errorMessage={
                             values.isMailingAddressDifferentFromRegisteredAddress &&
-                            // @ts-expect-error come back
                             errors?.mailingAddress?.state &&
-                            // @ts-expect-error come back
                             touched?.mailingAddress?.state &&
-                            // @ts-expect-error come back
                             errors?.mailingAddress?.state
                           }
                           disabled={
@@ -676,11 +643,8 @@ const ViewCreateOrEditCompany = ({
                           value={values?.mailingAddress?.city || ""}
                           errorMessage={
                             values.isMailingAddressDifferentFromRegisteredAddress &&
-                            // @ts-expect-error come back
                             errors?.mailingAddress?.city &&
-                            // @ts-expect-error come back
                             touched?.mailingAddress?.city &&
-                            // @ts-expect-error come back
                             errors?.mailingAddress?.city
                           }
                           disabled={
@@ -701,11 +665,8 @@ const ViewCreateOrEditCompany = ({
                           handleBlur={handleBlur}
                           errorMessage={
                             values.isMailingAddressDifferentFromRegisteredAddress &&
-                            // @ts-expect-error come back
                             errors?.mailingAddress?.street &&
-                            // @ts-expect-error come back
                             touched?.mailingAddress?.street &&
-                            // @ts-expect-error come back
                             errors?.mailingAddress?.street
                           }
                           disabled={
@@ -724,11 +685,8 @@ const ViewCreateOrEditCompany = ({
                           handleBlur={handleBlur}
                           errorMessage={
                             values.isMailingAddressDifferentFromRegisteredAddress &&
-                            // @ts-expect-error come back
                             errors?.mailingAddress?.zipCode &&
-                            // @ts-expect-error come back
                             touched?.mailingAddress?.zipCode &&
-                            // @ts-expect-error come back
                             errors?.mailingAddress?.zipCode
                           }
                           disabled={
