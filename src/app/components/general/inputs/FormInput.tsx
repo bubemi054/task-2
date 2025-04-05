@@ -56,15 +56,15 @@ export default function FormInput({
       )}
 
       {type === "file" ? (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1 sm:gap-3">
           {/* Label triggers hidden input */}
           <label
             htmlFor={name}
-            className="cursor-pointer px-4 py-2 bg-gray-700 text-white rounded-md inline-block"
+            className="cursor-pointer px-2 sm:px-4 py-2 bg-gray-700 text-white rounded-md inline-block truncate"
           >
             Choose File
           </label>
-          <span className="ml-2 text-gray-600">
+          <span className="ml-2 text-gray-600 truncate max-w-[150px] sm:max-w-[220px]">
             {value && extractFilename
               ? extractFilename(value)
               : "No file chosen"}
@@ -76,11 +76,18 @@ export default function FormInput({
             name={name}
             onBlur={handleBlur}
             className="hidden"
-            onChange={onChange}
+            onInput={onChange}
             accept={accept}
             disabled={disabled || loading}
           />
-          {value && <span className="flex items-center gap-2 border rounded-md p-2 bg-gray-700 text-white cursor-pointer" onClick={setViewImg}>Preview <VscEye className="text-[20px]" /></span>}
+          {value && (
+            <span
+              className="flex items-center gap-2 border rounded-md p-2 bg-gray-700 text-white cursor-pointer"
+              onClick={setViewImg}
+            >
+              Preview <VscEye className="text-[20px]" />
+            </span>
+          )}
         </div>
       ) : (
         <input

@@ -20,7 +20,7 @@ const ViewCreateOrEditCompany = ({
   client: ReturnType<typeof useApolloClient>;
 }) => {
   const searchParams = useSearchParams();
-  const companyID = searchParams.get("companyID"); 
+  const companyID = searchParams.get("companyID");
   const {
     formData,
     handleCreate,
@@ -65,6 +65,8 @@ const ViewCreateOrEditCompany = ({
               handleSubmit,
               isSubmitting,
               setFieldValue,
+              setFieldTouched,
+              setFieldError,
               dirty,
               isValid,
             }) => {
@@ -154,11 +156,6 @@ const ViewCreateOrEditCompany = ({
                 };
 
               const canSubmit = isValid && dirty;
-
-              // console.log({errors});
-              // console.log({values});
-              console.log({isValid});
-              // console.log("isMailingAddressDifferentFromRegisteredAddress", values.isMailingAddressDifferentFromRegisteredAddress);
 
               return (
                 <>
@@ -353,7 +350,7 @@ const ViewCreateOrEditCompany = ({
                         label="Phone"
                         name="phone"
                         onChange={handleChange}
-                        placeholder="e.g +1 (123) 456-7890"
+                        placeholder="e.g +1 (212) 567-7897"
                         type="text"
                         value={values.phone || ""}
                         handleBlur={handleBlur}
@@ -366,7 +363,7 @@ const ViewCreateOrEditCompany = ({
                         label="Fax"
                         name="fax"
                         onChange={handleChange}
-                        placeholder="e.g +1-800-555-1234"
+                        placeholder="e.g +1 (212) 567-7897"
                         type="text"
                         value={values.fax || ""}
                         handleBlur={handleBlur}
@@ -407,12 +404,19 @@ const ViewCreateOrEditCompany = ({
                       <FormInput
                         label="Upload File"
                         name="logoS3Key"
-                        onChange={(e) => handleFileUpload(e, setFieldValue)}
+                        onChange={(e) =>
+                          handleFileUpload(e, setFieldValue, setFieldTouched, setFieldError)
+                        }
                         type="file"
                         value={values.logoS3Key || ""}
                         handleBlur={handleBlur}
                         loading={fileIsSaving}
-                        errorMessage={errors.logoS3Key}
+                        errorMessage={false}
+                        // errorMessage={
+                        //   errors.logoS3Key &&
+                        //   touched.logoS3Key &&
+                        //   errors.logoS3Key
+                        // }
                         accept={accept}
                         extractFilename={extractFilename}
                         required
@@ -481,7 +485,7 @@ const ViewCreateOrEditCompany = ({
                           type="text"
                           value={values?.primaryContactPerson?.phone || ""}
                           handleBlur={handleBlur}
-                          placeholder="e.g +1 (123) 456-7890"
+                          placeholder="e.g +1 (212) 567-7897"
                           errorMessage={
                             errors.primaryContactPerson?.phone &&
                             touched.primaryContactPerson?.phone &&
@@ -722,7 +726,11 @@ const ViewCreateOrEditCompany = ({
                           type="submit"
                           disabled={!canSubmit || isSubmitting || fileIsSaving}
                         >
-                          {isSubmitting ? "Updating..." : "Update"}
+                          {dirty
+                            ? isSubmitting
+                              ? "Updating..."
+                              : "Update"
+                            : "Edit a field to update"}
                         </Button2>
                       </div>
                     )}

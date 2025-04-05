@@ -19,7 +19,7 @@ export const useLoginForm = () => {
   const handleSubmit = (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!formData.username && !formData.password)
+    if (!formData.username || !formData.password)
       return toast.info("Enter your login credentials!");
 
     // Generate UUID

@@ -5,19 +5,20 @@ import { useApolloClient } from "@apollo/client";
 import { useRouter } from "next/navigation";
 import useCompanies from "./useCompanies";
 import { FormikHelpers } from "formik";
-import { toast } from "react-toastify";
+import { toast, Id } from "react-toastify";
 import { UpdateCompanyInput } from "../lib/graphql-types";
 import isEmail from "validator/es/lib/isEmail";
 import isUrl from "validator/es/lib/isURL";
+import isInt from "validator/es/lib/isInt";
 import { isValidPhoneNumber } from "libphonenumber-js";
 
 export const initialFormData: UpdateCompanyInput = {
   legalName: "",
   stateOfIncorporation: "",
   industry: "",
-  totalNumberOfEmployees: undefined,
-  numberOfFullTimeEmployees: undefined,
-  numberOfPartTimeEmployees: undefined,
+  totalNumberOfEmployees: 0,
+  numberOfFullTimeEmployees: 0,
+  numberOfPartTimeEmployees: 0,
   website: "",
   linkedInCompanyPage: "",
   facebookCompanyPage: "",
@@ -91,15 +92,15 @@ export const validate = (values: UpdateCompanyInput) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const errors: Record<string, any> = {};
 
-  if (!values.legalName) {
+  if (values.legalName.trim() === "") {
     errors.legalName = "Legal name is required";
   }
 
-  if (!values.stateOfIncorporation) {
+  if (values.stateOfIncorporation.trim() === "") {
     errors.stateOfIncorporation = "State of incorporation is required";
   }
 
-  if (!values.industry) {
+  if (values.industry.trim() === "") {
     errors.industry = "Industry is required";
   }
 
@@ -109,6 +110,26 @@ export const validate = (values: UpdateCompanyInput) => {
   ) {
     errors.totalNumberOfEmployees =
       "Total number of employees cannot be negative";
+  } else if (!isInt(String(values.totalNumberOfEmployees))) {
+    errors.totalNumberOfEmployees =
+      "Total number of employees must be an integer";
+  }
+
+  if (
+    Number(values.totalNumberOfEmployees) >= 0 &&
+    Number(values.numberOfFullTimeEmployees) >= 0 &&
+    Number(values.numberOfPartTimeEmployees) >= 0
+  ) {
+    const sum =
+      Number(values.numberOfFullTimeEmployees) +
+      Number(values.numberOfPartTimeEmployees);
+    const bothAreNotZero =
+      Number(values.numberOfFullTimeEmployees) !== 0 ||
+      Number(values.numberOfPartTimeEmployees) !== 0;
+    if (bothAreNotZero && Number(values.totalNumberOfEmployees) !== sum) {
+      errors.totalNumberOfEmployees =
+        "Total number of employees must be equal to the sum of full-time and part-time employees";
+    }
   }
 
   if (
@@ -116,6 +137,18 @@ export const validate = (values: UpdateCompanyInput) => {
     Number(values.numberOfFullTimeEmployees) < 0
   ) {
     errors.numberOfFullTimeEmployees = "Full-time employees cannot be negative";
+  } else if (!isInt(String(values.numberOfFullTimeEmployees))) {
+    errors.numberOfFullTimeEmployees = "Full-time employees must be an integer";
+  }
+
+  if (
+    Number(values.numberOfFullTimeEmployees) >= 0 &&
+    Number(values.totalNumberOfEmployees) >= 0 &&
+    Number(values.numberOfFullTimeEmployees) >
+      Number(values.totalNumberOfEmployees)
+  ) {
+    errors.numberOfFullTimeEmployees =
+      "Full-time employees cannot be greater than total number of employees";
   }
 
   if (
@@ -123,6 +156,18 @@ export const validate = (values: UpdateCompanyInput) => {
     Number(values.numberOfPartTimeEmployees) < 0
   ) {
     errors.numberOfPartTimeEmployees = "Part-time employees cannot be negative";
+  } else if (!isInt(String(values.numberOfPartTimeEmployees))) {
+    errors.numberOfPartTimeEmployees = "Part-time employees must be an integer";
+  }
+
+  if (
+    Number(values.numberOfFullTimeEmployees) >= 0 &&
+    Number(values.totalNumberOfEmployees) >= 0 &&
+    Number(values.numberOfPartTimeEmployees) >
+      Number(values.totalNumberOfEmployees)
+  ) {
+    errors.numberOfPartTimeEmployees =
+      "Part-time employees cannot be greater than total number of employees";
   }
 
   if (!values.email || !isEmail(values.email || "")) {
@@ -162,36 +207,41 @@ export const validate = (values: UpdateCompanyInput) => {
     errors.facebookCompanyPage = "Invalid Facebook company page URL";
   }
 
-  if (!values.otherInformation) {
+  if (values.otherInformation.trim() === "") {
     errors.otherInformation = "Other information is required";
   }
 
+  // if (values.logoS3Key?.trim() === "") {
+  //   console.log("values.logoS3Key:", values.logoS3Key);
+  //   errors.logoS3Key = "Logo is required";
+  // }
+
   // Validate registered address
-  if (!values.registeredAddress?.country) {
+  if (values.registeredAddress?.country.trim() === "") {
     errors.registeredAddress = {
       ...errors.registeredAddress,
       country: "Country is required",
     };
   }
-  if (!values.registeredAddress?.state) {
+  if (values.registeredAddress?.state.trim() === "") {
     errors.registeredAddress = {
       ...errors.registeredAddress,
       state: "State is required",
     };
   }
-  if (!values.registeredAddress?.city) {
+  if (values.registeredAddress?.city.trim() === "") {
     errors.registeredAddress = {
       ...errors.registeredAddress,
       city: "City is required",
     };
   }
-  if (!values.registeredAddress?.street) {
+  if (values.registeredAddress?.street.trim() === "") {
     errors.registeredAddress = {
       ...errors.registeredAddress,
       street: "Street is required",
     };
   }
-  if (!values.registeredAddress?.zipCode) {
+  if (values.registeredAddress?.zipCode.trim() === "") {
     errors.registeredAddress = {
       ...errors.registeredAddress,
       zipCode: "Zip code is required",
@@ -200,31 +250,31 @@ export const validate = (values: UpdateCompanyInput) => {
 
   if (!values.isMailingAddressDifferentFromRegisteredAddress) {
     // Validate mailing address if different from registered
-    if (!values.mailingAddress?.country) {
+    if (values.mailingAddress?.country.trim() === "") {
       errors.mailingAddress = {
         ...errors.mailingAddress,
         country: "Country is required",
       };
     }
-    if (!values.mailingAddress?.state) {
+    if (values.mailingAddress?.state.trim() === "") {
       errors.mailingAddress = {
         ...errors.mailingAddress,
         state: "State is required",
       };
     }
-    if (!values.mailingAddress?.city) {
+    if (values.mailingAddress?.city.trim() === "") {
       errors.mailingAddress = {
         ...errors.mailingAddress,
         city: "City is required",
       };
     }
-    if (!values.mailingAddress?.street) {
+    if (values.mailingAddress?.street.trim() === "") {
       errors.mailingAddress = {
         ...errors.mailingAddress,
         street: "Street is required",
       };
     }
-    if (!values.mailingAddress?.zipCode) {
+    if (values.mailingAddress?.zipCode.trim() === "") {
       errors.mailingAddress = {
         ...errors.mailingAddress,
         zipCode: "Zip code is required",
@@ -239,13 +289,13 @@ export const validate = (values: UpdateCompanyInput) => {
       firstName: "First name is required",
     };
   }
-  if (!values.primaryContactPerson?.lastName) {
+  if (values.primaryContactPerson?.lastName.trim() === "") {
     errors.primaryContactPerson = {
       ...errors.primaryContactPerson,
       lastName: "Last name is required",
     };
   }
-  if (!values.primaryContactPerson?.email) {
+  if (values.primaryContactPerson?.email.trim() === "") {
     errors.primaryContactPerson = {
       ...errors.primaryContactPerson,
       email: "Email is required",
@@ -256,7 +306,7 @@ export const validate = (values: UpdateCompanyInput) => {
       email: "Invalid email format",
     };
   }
-  if (!values.primaryContactPerson?.phone) {
+  if (values.primaryContactPerson?.phone.trim() === "") {
     errors.primaryContactPerson = {
       ...errors.primaryContactPerson,
       phone: "Phone number is required",
@@ -306,6 +356,7 @@ export const useCreateOrEditCompany = (
   useEffect(() => {
     if (!companyId || fetchFailed) {
       setFormMode("create");
+      setFormData(initialFormData);
       return;
     }
     setFetchingCompany(true);
@@ -336,6 +387,7 @@ export const useCreateOrEditCompany = (
         toast.error(errorMessage);
         setFetchFailed(true);
         setFormMode("create");
+        setFormData(initialFormData);
       } finally {
         setFetchingCompany(false); // ✅ This ensures it turns false after fetching (even if there's an error)
       }
@@ -346,26 +398,47 @@ export const useCreateOrEditCompany = (
     return () => clearTimeout(id);
   }, [companyId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  console.log({ fetchingCompany });
-
   const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    setFieldValue?: FormikHelpers<UpdateCompanyInput>["setFieldValue"]
+    setFieldValue?: FormikHelpers<UpdateCompanyInput>["setFieldValue"],
+    setFieldTouched?: FormikHelpers<UpdateCompanyInput>["setFieldTouched"],
+    setFieldError?: FormikHelpers<UpdateCompanyInput>["setFieldError"],
+    // handleBlur?: React.FocusEventHandler<HTMLInputElement>
   ) => {
+    let toastId: Id;
+
     try {
       setFileIsSaving(true);
-      const toastId = toast.info("Uploading image!");
+      toastId = toast.info("Uploading image!");
+
       const file = e.target.files?.[0];
       const { key } = await saveFileImage(file);
 
       setFieldValue?.("logoS3Key", key);
+      setFieldError?.("logoS3Key", undefined);
 
-      toast.dismiss(toastId);
       toast.success("File uploaded successfully:");
-    } catch {
-      toast.error("File upload failed:");
+    } catch (err) {
+      let errorMessage = "Failed to upload file.";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+
+      setFieldValue?.("logoS3Key", "");
+      setFieldError?.("logoS3Key", errorMessage);
+
+      toast.error(errorMessage);
     } finally {
+      if (toastId !== undefined) {
+        toast.dismiss(toastId);
+      }
       setFileIsSaving(false);
+      setFieldTouched?.("logoS3Key");
+      // handleBlur?.({
+      //   target: {
+      //     name: "logoS3Key",
+      //   },
+      // } as unknown as React.FocusEvent<HTMLInputElement>);
     }
   };
 
