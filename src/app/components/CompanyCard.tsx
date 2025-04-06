@@ -13,24 +13,33 @@ interface CompanyCardProps {
 
 const CompanyCard = ({ company, getFileImage }: CompanyCardProps) => {
   const [url, setUrl] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getImgUrl = async () => {
-      const { url } = await getFileImage(company.logoS3Key!);
-      setUrl(url);
+      try {
+        const { url } = await getFileImage(company.logoS3Key!);
+        setUrl(url);
+      } catch (error) {
+        console.error("Failed to fetch image URL:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     getImgUrl();
-    // eslint-disable-next-line
-  }, [company.logoS3Key]);
+  }, [company.logoS3Key, getFileImage]);
 
   return (
     <Link
       href={`/create-or-edit-company?companyID=${company.id}`}
       className="bg-gray-100 hover:bg-gray-200 rounded-2xl px-2 py-5 flex flex-col items-center space-y-3 shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
     >
-      {/* Logo Container */}
-      <div className="w-full h-24 bg-white rounded-lg flex justify-center items-center overflow-hidden shadow">
+      <div
+        className={`w-full h-24 bg-white rounded-lg flex justify-center items-center overflow-hidden shadow ${
+          loading && "animate-pulse"
+        }`}
+      >
         <Image
           role="presentation"
           className="object-contain"

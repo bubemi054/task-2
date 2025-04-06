@@ -45,7 +45,8 @@ export default function useCompanies({ client }: useCompaniesProps) {
         const legalName = company?.legalName || "";
         const industry = company?.industry || "";
         const email = company?.email || "";
-        const target = `${id} ${legalName} ${industry} ${email}`.toLowerCase();
+        const state = company.stateOfIncorporation || "";
+        const target = `${id} ${legalName} ${industry} ${email} ${state}`.toLowerCase();
         return target.includes(search.toLowerCase());
       });
 

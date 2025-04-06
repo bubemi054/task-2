@@ -24,6 +24,6 @@ describe("Heading2 Component", () => {
 
   it("merges additional classNames", () => {
     render(<Heading2 className="text-blue-500">Custom Heading</Heading2>);
-    expect(screen.getByText("Custom Paragraph")).toHaveClass("text-blue-500");
+    expect(screen.getByText("Custom Heading")).toHaveClass("text-blue-500");
   });
 });

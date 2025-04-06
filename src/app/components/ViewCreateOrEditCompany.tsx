@@ -36,6 +36,9 @@ const ViewCreateOrEditCompany = ({
     extractFilename,
     viewImg,
     setViewImg,
+    isCreate,
+    initialErrors,
+    initialTouched,
   } = useCreateOrEditCompany(client, companyID);
 
   if (fetchingCompany) {
@@ -46,6 +49,7 @@ const ViewCreateOrEditCompany = ({
     );
   }
 
+
   return (
     <div className="w-full overflow-hidden">
       <div className="w-[95%] mt-[50px] mb-[50px] m-auto">
@@ -55,6 +59,8 @@ const ViewCreateOrEditCompany = ({
             enableReinitialize={true}
             validate={validate}
             onSubmit={formMode == "create" ? handleCreate : handleUpdate}
+            initialErrors={initialErrors}
+            initialTouched={initialTouched}
           >
             {({
               values,
@@ -156,6 +162,8 @@ const ViewCreateOrEditCompany = ({
                 };
 
               const canSubmit = isValid && dirty;
+
+              // console.log({ values });
 
               return (
                 <>
@@ -350,7 +358,7 @@ const ViewCreateOrEditCompany = ({
                         label="Phone"
                         name="phone"
                         onChange={handleChange}
-                        placeholder="e.g +1 (212) 567-7897"
+                        placeholder="e.g +1 866 507 5724"
                         type="text"
                         value={values.phone || ""}
                         handleBlur={handleBlur}
@@ -363,7 +371,7 @@ const ViewCreateOrEditCompany = ({
                         label="Fax"
                         name="fax"
                         onChange={handleChange}
-                        placeholder="e.g +1 (212) 567-7897"
+                        placeholder="e.g +1 866 507 5724"
                         type="text"
                         value={values.fax || ""}
                         handleBlur={handleBlur}
@@ -405,7 +413,12 @@ const ViewCreateOrEditCompany = ({
                         label="Upload File"
                         name="logoS3Key"
                         onChange={(e) =>
-                          handleFileUpload(e, setFieldValue, setFieldTouched, setFieldError)
+                          handleFileUpload(
+                            e,
+                            setFieldValue,
+                            setFieldTouched,
+                            setFieldError
+                          )
                         }
                         type="file"
                         value={values.logoS3Key || ""}
@@ -485,7 +498,7 @@ const ViewCreateOrEditCompany = ({
                           type="text"
                           value={values?.primaryContactPerson?.phone || ""}
                           handleBlur={handleBlur}
-                          placeholder="e.g +1 (212) 567-7897"
+                          placeholder="e.g +1 866 507 5724"
                           errorMessage={
                             errors.primaryContactPerson?.phone &&
                             touched.primaryContactPerson?.phone &&
@@ -583,18 +596,20 @@ const ViewCreateOrEditCompany = ({
                       </div>
                     </div>
 
-                    <Checkbox1
-                      onChange={
-                        handleToggleIsMailingAddressDifferentFromRegisteredAddress
-                      }
-                      name="isMailingAddressDifferentFromRegisteredAddress"
-                      checked={
-                        values.isMailingAddressDifferentFromRegisteredAddress ||
-                        false
-                      }
-                      label="Is mailing address different from registered address?"
-                      className="mt-[20px]"
-                    />
+                    {isCreate && (
+                      <Checkbox1
+                        onChange={
+                          handleToggleIsMailingAddressDifferentFromRegisteredAddress
+                        }
+                        name="isMailingAddressDifferentFromRegisteredAddress"
+                        checked={
+                          values.isMailingAddressDifferentFromRegisteredAddress ||
+                          false
+                        }
+                        label="Is mailing address different from registered address?"
+                        className="mt-[20px]"
+                      />
+                    )}
 
                     <div className="flex flex-col gap-[30px] mt-[20px]">
                       <Heading2>Mailing Address</Heading2>
@@ -615,7 +630,8 @@ const ViewCreateOrEditCompany = ({
                             errors?.mailingAddress?.country
                           }
                           disabled={
-                            !values.isMailingAddressDifferentFromRegisteredAddress
+                            !values.isMailingAddressDifferentFromRegisteredAddress &&
+                            isCreate
                           }
                           required
                         />
@@ -635,7 +651,8 @@ const ViewCreateOrEditCompany = ({
                             errors?.mailingAddress?.state
                           }
                           disabled={
-                            !values.isMailingAddressDifferentFromRegisteredAddress
+                            !values.isMailingAddressDifferentFromRegisteredAddress &&
+                            isCreate
                           }
                           required
                         />
@@ -655,7 +672,8 @@ const ViewCreateOrEditCompany = ({
                             errors?.mailingAddress?.city
                           }
                           disabled={
-                            !values.isMailingAddressDifferentFromRegisteredAddress
+                            !values.isMailingAddressDifferentFromRegisteredAddress &&
+                            isCreate
                           }
                           required
                         />
@@ -677,7 +695,8 @@ const ViewCreateOrEditCompany = ({
                             errors?.mailingAddress?.street
                           }
                           disabled={
-                            !values.isMailingAddressDifferentFromRegisteredAddress
+                            !values.isMailingAddressDifferentFromRegisteredAddress &&
+                            isCreate
                           }
                           required
                         />
@@ -697,7 +716,8 @@ const ViewCreateOrEditCompany = ({
                             errors?.mailingAddress?.zipCode
                           }
                           disabled={
-                            !values.isMailingAddressDifferentFromRegisteredAddress
+                            !values.isMailingAddressDifferentFromRegisteredAddress &&
+                            isCreate
                           }
                           required
                         />

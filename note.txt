@@ -1,43 +1,45 @@
 {
-  "data": {
-    "createCompany": {
-      "company": {
-        "id": "9a586256-704c-46b4-aa1e-14e95b7e9465",
-        "legalName": "Tech Corp Ltd.",
-        "stateOfIncorporation": "California",
-        "industry": "Software Development",
-        "totalNumberOfEmployees": 200,
-        "numberOfFullTimeEmployees": 180,
-        "numberOfPartTimeEmployees": 20,
-        "website": "https://techcorpltd.com",
-        "linkedInCompanyPage": "https://linkedin.com/company/techcorpltd",
-        "facebookCompanyPage": "https://facebook.com/techcorpltd",
-        "otherInformation": "A leading software company focused on AI solutions.",
-        "phone": "+1-800-123-4567",
-        "fax": "+1-800-123-4568",
-        "email": "contact@techcorpltd.com",
-        "registeredAddress": {
-          "country": "USA",
-          "state": "California",
-          "city": "San Francisco",
-          "street": "123 Market Street",
-          "zipCode": "94103"
-        },
-        "mailingAddress": {
-          "country": "USA",
-          "state": "California",
-          "city": "San Francisco",
-          "street": "456 Mission Street",
-          "zipCode": "94104"
-        },
-        "primaryContactPerson": {
-          "firstName": "John",
-          "lastName": "Doe",
-          "email": "john.doe@techcorpltd.com",
-          "phone": "+1-800-555-7890"
-        },
-        "logoS3Key": "chrome_ROT0zdCbxY-E9-DRrb2Vpyus0S-l6aRS-2025-03-31T11:10:18"
-      }
+    "data": {
+        "getCompany": {
+            "id": "28cc7280-b86c-4ab3-a075-1c867aaf4764",
+            "legalName": "Man united",
+            "email": "contact@manu.com",
+            "phone": "+1 866 507 5724",
+            "industry": "Sports",
+            "website": "https://manu.com",
+            "facebookCompanyPage": "https://facebook.com/manu",
+            "linkedInCompanyPage": "https://linkedin.com/company/manu",
+            "fax": "+1 866 507 5724",
+            "logoS3Key": "Screenshot (57).png-W9Ip_92P7DqwAuW_aDqzi-2025-04-06T20:33:04",
+            "numberOfFullTimeEmployees": 1,
+            "numberOfPartTimeEmployees": 0,
+            "totalNumberOfEmployees": 1,
+            "stateOfIncorporation": "Manchester",
+            "otherInformation": "None",
+            "registeredAddress": {
+                "street": "street1",
+                "city": "city1",
+                "state": "state1",
+                "country": "country1",
+                "zipCode": "zip1",
+                "__typename": "BasicAddress"
+            },
+            "mailingAddress": {
+                "street": "street2",
+                "city": "city2",
+                "state": "state2",
+                "country": "country2",
+                "zipCode": "zip2",
+                "__typename": "BasicAddress"
+            },
+            "primaryContactPerson": {
+                "firstName": "Ruben",
+                "lastName": "Amorim",
+                "email": "ruby@gmail.com",
+                "phone": "+1 415 555 2671",
+                "__typename": "Contact"
+            },
+            "__typename": "Company"
+        }
     }
-  }
 }

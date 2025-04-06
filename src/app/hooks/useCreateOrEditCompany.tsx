@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useApolloClient } from "@apollo/client";
 import { useRouter } from "next/navigation";
 import useCompanies from "./useCompanies";
@@ -110,7 +110,10 @@ export const validate = (values: UpdateCompanyInput) => {
   ) {
     errors.totalNumberOfEmployees =
       "Total number of employees cannot be negative";
-  } else if (!isInt(String(values.totalNumberOfEmployees))) {
+  } else if (
+    !values.totalNumberOfEmployees &&
+    !isInt(String(values.totalNumberOfEmployees || 0))
+  ) {
     errors.totalNumberOfEmployees =
       "Total number of employees must be an integer";
   }
@@ -134,10 +137,14 @@ export const validate = (values: UpdateCompanyInput) => {
 
   if (
     values.numberOfFullTimeEmployees !== undefined &&
-    Number(values.numberOfFullTimeEmployees) < 0
+    Number(values.numberOfFullTimeEmployees) <= 0
   ) {
-    errors.numberOfFullTimeEmployees = "Full-time employees cannot be negative";
-  } else if (!isInt(String(values.numberOfFullTimeEmployees))) {
+    errors.numberOfFullTimeEmployees =
+      "Full-time employees cannot be less than or equal to zero";
+  } else if (
+    !values.numberOfFullTimeEmployees &&
+    !isInt(String(values.numberOfFullTimeEmployees || 0))
+  ) {
     errors.numberOfFullTimeEmployees = "Full-time employees must be an integer";
   }
 
@@ -156,7 +163,10 @@ export const validate = (values: UpdateCompanyInput) => {
     Number(values.numberOfPartTimeEmployees) < 0
   ) {
     errors.numberOfPartTimeEmployees = "Part-time employees cannot be negative";
-  } else if (!isInt(String(values.numberOfPartTimeEmployees))) {
+  } else if (
+    !values.numberOfPartTimeEmployees &&
+    !isInt(String(values.numberOfPartTimeEmployees || 0))
+  ) {
     errors.numberOfPartTimeEmployees = "Part-time employees must be an integer";
   }
 
@@ -372,9 +382,14 @@ export const useCreateOrEditCompany = (
           return;
         }
 
+        console.log({
+          companyToEdit,
+        });
+
         setFormData((prev) => ({
           ...prev,
           ...(companyToEdit as Partial<UpdateCompanyInput>),
+          isMailingAddressDifferentFromRegisteredAddress: true
         }));
         saveCompanyLocally(companyToEdit);
         setFormMode("edit");
@@ -402,7 +417,7 @@ export const useCreateOrEditCompany = (
     e: React.ChangeEvent<HTMLInputElement>,
     setFieldValue?: FormikHelpers<UpdateCompanyInput>["setFieldValue"],
     setFieldTouched?: FormikHelpers<UpdateCompanyInput>["setFieldTouched"],
-    setFieldError?: FormikHelpers<UpdateCompanyInput>["setFieldError"],
+    setFieldError?: FormikHelpers<UpdateCompanyInput>["setFieldError"]
     // handleBlur?: React.FocusEventHandler<HTMLInputElement>
   ) => {
     let toastId: Id;
@@ -523,8 +538,28 @@ export const useCreateOrEditCompany = (
     }
   };
 
+  const isCreate = formMode === "create";
+  const isEdit = formMode === "edit";
+
+  const initialErrors = useMemo(() => {
+    return isCreate ? {} : validate(formData);
+  }, [isCreate, formData]);
+  
+  const initialTouched = useMemo(() => {
+    return Object.keys(formData).reduce((acc, key) => {
+      if(isCreate) {
+        acc[key] = false;
+      }else {
+        acc[key] = true;
+      }
+
+      return acc;
+    }, {});
+  }, [isCreate, formData]);
+
   return {
     formData,
+    setFormData,
     handleCreate,
     handleUpdate,
     handleDelete,
@@ -540,5 +575,9 @@ export const useCreateOrEditCompany = (
     extractFilename,
     viewImg,
     setViewImg,
+    initialErrors,
+    initialTouched,
+    isCreate,
+    isEdit
   };
 };
